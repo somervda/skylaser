@@ -28,7 +28,7 @@ pip --version
 
 # Install skyfield https://rhodesmill.org/skyfield/
 echo 3. Install skyfield
-pip install skyfield
+pip install skyfield --break-system-packages
 
 
 # # Add iotLoader.service to the /lib/systemd/system/ folder
