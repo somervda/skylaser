@@ -30,6 +30,8 @@ pip --version
 echo 3. Install skyfield
 pip install skyfield --break-system-packages
 
+pip install pandas --break-system-packages
+
 
 # # Add iotLoader.service to the /lib/systemd/system/ folder
 # # By default service is not enabled 
