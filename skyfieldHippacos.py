@@ -8,7 +8,10 @@ with load.open(hipparcos.URL) as f:
 
 barnards_star = Star.from_dataframe(df.loc[87937])
 
+print("loading de421.bsp")
 planets = load('de421.bsp')
+
+print("calculating barnards_star position")
 earth = planets['earth']
 
 ts = load.timescale()
