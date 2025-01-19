@@ -65,7 +65,9 @@ pip3 install adafruit-circuitpython-pca9685 --break-system-packages
 # GPS module connect via serial
 # see https://sparklers-the-makers.github.io/blog/robotics/use-neo-6m-module-with-raspberry-pi/
 pip install pynmea2 --break-system-packages
-# Note: compass uses gy271compass.py library
+# Note: compass uses gy271compass.py library already loaded in project files
+# Use gpiozero for managing a rotary control https://gpiozero.readthedocs.io/en/stable/index.html
+pip install gpiozero --break-system-packages
 
 # # Add iotLoader.service to the /lib/systemd/system/ folder
 # # By default service is not enabled 
