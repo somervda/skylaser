@@ -61,8 +61,12 @@ sudo apt-get install -y i2c-tools
 sudo usermod -a -G spi,gpio,i2c pi
 echo 4b. OLED Installing adafruit i2c and oled support
 pip3 install adafruit-circuitpython-ssd1306 --break-system-packages
+
+# pca9685 is needed to support the servo kit library
 pip3 install adafruit-circuitpython-pca9685 --break-system-packages
+#  see https://learn.adafruit.com/adafruit-16-channel-servo-driver-with-raspberry-pi/using-the-adafruit-library
 pip3 install adafruit-circuitpython-servokit  --break-system-packages
+
 # GPS module connect via serial
 # see https://sparklers-the-makers.github.io/blog/robotics/use-neo-6m-module-with-raspberry-pi/
 pip install pynmea2 --break-system-packages
