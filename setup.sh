@@ -62,6 +62,7 @@ sudo usermod -a -G spi,gpio,i2c pi
 echo 4b. OLED Installing adafruit i2c and oled support
 pip3 install adafruit-circuitpython-ssd1306 --break-system-packages
 pip3 install adafruit-circuitpython-pca9685 --break-system-packages
+pip3 install adafruit-circuitpython-servokit  --break-system-packages
 # GPS module connect via serial
 # see https://sparklers-the-makers.github.io/blog/robotics/use-neo-6m-module-with-raspberry-pi/
 pip install pynmea2 --break-system-packages
