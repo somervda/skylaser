@@ -6,6 +6,7 @@
 # Import all board pins.
 from board import SCL, SDA
 import busio
+import time
 
 # Import the SSD1306 module.
 import adafruit_ssd1306
@@ -20,6 +21,8 @@ print(i2c.scan())
 # to the right size for your display!
 #  128 * 64 ssd1309
 display = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c)
+# display.poweron()
+# display.contrast(255)
 # Alternatively you can change the I2C address of the device with an addr parameter:
 #display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, addr=0x31)
 
@@ -40,4 +43,7 @@ display.text("Planets", 0, 0,1)
 display.text("Stars", 0, 10,1)
 display.text("Constalations", 0, 20,1)
 display.text("Satalites", 0, 30,1)
+display.show()
+time.sleep(5)
+display.fill(0)
 display.show()
