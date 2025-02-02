@@ -74,6 +74,8 @@ pip install pynmea2 --break-system-packages
 # Use gpiozero for managing a rotary control https://gpiozero.readthedocs.io/en/stable/index.html
 pip install gpiozero --break-system-packages
 
+sudo pip3 install smbus2 --break-system-packages
+
 # # Add iotLoader.service to the /lib/systemd/system/ folder
 # # By default service is not enabled 
 # echo Setup the iotLoader.service to run on startup 

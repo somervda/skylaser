@@ -1,5 +1,5 @@
 import smbus2
-from time import sleep
+import time
 import math
 
 C_REG_A = 0x09 # Address of Configuration register A
@@ -29,6 +29,7 @@ TEMP_REG = 0x07 # Address of Temperature MSB data register
 
 # declination angle of location where measurement going to be done
 CURR_DECL = -0.00669 # determine by yourself
+# CURR_DECL = 0 # determine by yourself
 pi = 3.14159265359 # define pi value
 
 class compass():
@@ -37,7 +38,7 @@ class compass():
         self.device_address = address # magnetometer device i2c address
         self._declination = d
         self.magnetometer_init(mode, odr, sens, osr)
-        sleep(2)
+        time.sleep(2)
 
     def soft_reset(self):
         self.bus.write_byte_data(self.device_address, C_REG_B, 0x80)
@@ -73,13 +74,26 @@ class compass():
             
         return value
 
-    def get_bearing(self):
+    def getRaw(self):
         # Read Accelerometer raw value
         x = self.__read_raw_data(X_axis_H)
         z = self.__read_raw_data(Z_axis_H)
         y = self.__read_raw_data(Y_axis_H)
-        
+        return x,y,z
+
+
+    def get_bearing(self,xMin,xMax,yMin,yMax):
+        # Read Accelerometer raw value
+        x = self.__read_raw_data(X_axis_H)
+        z = self.__read_raw_data(Z_axis_H)
+        y = self.__read_raw_data(Y_axis_H)
+
+        print("Raw x,y:",x,y)
+        x= ((x - xMin) * 100)/ (xMax -xMin)
+        y= ((y - yMin) * 100)/ (yMax -yMin)
+        print("Processed x,y:",x,y)
         heading = math.atan2(y, x) + self._declination
+        print("heading:",heading)
         
         # due to declination check for >360 degree
         if(heading > 2.0 * pi):
@@ -105,3 +119,48 @@ class compass():
 
     def set_declination(self, value):
         self._declination = value
+
+    # collects the max of x,y,z and calculates the offset
+    # call this method with QMC5883 xOffset,yOffset and zOffset = 0
+    # requires the user to rotate the chip until no more changes in x,y,z and offset occur
+    # has to be aborted with STRG+C
+    # use the xOffset,yOffset,zOffset result for the initialization of the QMC5883
+    def calibrate(self):
+        xMin = 0
+        xMax = 0
+        yMin = 0
+        yMax = 0
+        zMin = 0
+        zMax = 0
+        xOffset = 0
+        yOffset = 0
+        zOffset = 0
+
+        print("Rotate your sensor in all directions until there are no longer changes in the reading. Stop with CTRL+C. Use the given x,y,z Offsets for QMC initialization")
+
+        while True:
+            # Read Accelerometer raw value
+            try:
+                x = self.__read_raw_data(X_axis_H)
+                z = self.__read_raw_data(Z_axis_H)
+                y = self.__read_raw_data(Y_axis_H)
+            except:
+                time.sleep(.1)
+            time.sleep(.5)
+            if (x < xMin):
+                xMin = x
+            if (x > xMax):
+                xMax = x
+            if (y < yMin):
+                yMin = y
+            if (y > yMax):
+                yMax = y
+            if (z < zMin):
+                zMin = z
+            if (z > zMax):
+                zMax = z
+            xOffset = ((xMax - xMin) / 2) - xMax
+            yOffset = ((yMax - yMin) / 2) - yMax
+            zOffset = ((zMax - zMin) / 2) - zMax
+            print("\rxMin[{}],xMax[{}],xOffset[{}],yMin[{}],yMax[{}],yOffset[{}],zMin[{}],zMax[{}],zOffset[{}]".format(xMin,xMax,xOffset,yMin,yMax,yOffset,zMin,zMax,zOffset),time.time())
+
