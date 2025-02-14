@@ -32,9 +32,9 @@ from i2c_core import i2c_core
 class HMC5883(object):
     # Correction to be set after calibration
     xs=1
-    ys=0.22688848746302945
-    xb=-1067.199999999999
-    yb=-15003.442993191602
+    ys=0.0047988198354269864
+    xb=1033.5999999999995
+    yb=8001.721496595801
 
     # Define registers values from datasheet
     ConfigurationRegisterA = 0x00

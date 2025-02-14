@@ -59,8 +59,8 @@ echo 4a. Install i2c utilities
 sudo apt-get install -y i2c-tools
 # Give pi user access to i2c
 sudo usermod -a -G spi,gpio,i2c pi
-echo 4b. OLED Installing adafruit i2c and oled support
-pip3 install adafruit-circuitpython-ssd1306 --break-system-packages
+echo 4b. OLED Installing luma oled libraries i2c and oled support
+pip install --upgrade luma.oled  --break-system-packages
 
 # pca9685 is needed to support the servo kit library
 pip3 install adafruit-circuitpython-pca9685 --break-system-packages
