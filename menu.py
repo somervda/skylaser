@@ -12,22 +12,15 @@ GPIO.setup(PINDOWN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(PINSELECT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Import the SSD1306 module for OLED display on I2C.
-# import adafruit_ssd1306
 # Create the I2C interface.
 from luma.core.interface.serial import i2c
-# from luma.core.interface.parallel import bitbang_6800
-# from luma.core.render import canvas
 from luma.oled.device import ssd1309
 from PIL import Image, ImageDraw
 
 # i2c = busio.I2C(SCL, SDA)
 ssdDisplay = i2c(port=1, address=0x3C)
-# substitute ssd1331(...) or sh1106(...) below if using that device
-# device = sh1106(serial)
 ssd1309Device = ssd1309(ssdDisplay)
 # See draw functions at https://pillow.readthedocs.io/en/latest/reference/ImageDraw.html#module-PIL.ImageDraw
-# draw=canvas(ssd1309Device)
-
 
 # ssd1306 I2C device parameters
 I2CWIDTH=128

@@ -1,0 +1,7 @@
+{
+    "//": "* set azimuth and altitude , min and max values to give servos exactly 180 degrees of motion.",
+    "AZAMUTH_MIN": 1120,
+    "AZAMUTH_MAX": 2470,
+    "ALTITUDE_MIN": 600,
+    "ALTITUDE_MAX": 2400
+}
