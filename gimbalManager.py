@@ -3,8 +3,8 @@ from adafruit_servokit import ServoKit
 import time
 
 class GimbalManager:
-    def __init__(self):
-        self.settingsManager = SettingsManager("settings.json")
+    def __init__(self,settingsFile):
+        self.settingsManager = SettingsManager(settingsFile)
         self.kit = ServoKit(channels=16)
         # Set the gimbals range of motion to be 180 degrees, starting with 0 degrees pointing east
         # and degrees increasing in anti-clockwise direction. Servo 0 controls the azimuth on the gimbal
@@ -26,15 +26,12 @@ class GimbalManager:
         if azimuth >=270 and azimuth<=360:
             servoAzimuth=450-azimuth
             servoAltitude=altitude
-        if azimuth >90 and azimuth<=180:
-            servoAzimuth=270-azimuth
-            servoAltitude=180-altitude
-        if azimuth >180 and azimuth<270:
+        if azimuth >90 and azimuth<=270:
             servoAzimuth=270-azimuth
             servoAltitude=180-altitude
         print("azimuth:",azimuth," altitude:",altitude," servoAzimuth:",servoAzimuth," servoAltitude:",servoAltitude)
         self.kit.servo[0].angle=servoAzimuth
         self.kit.servo[1].angle=servoAltitude
-        time.sleep(3)
+        time.sleep(1.5)
  
 

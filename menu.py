@@ -29,41 +29,52 @@ I2CWINDOWSIZE=7
 I2CFONTHEIGHT=9
 
 class MenuItem():
-    def __init__(self,name, description, elevation, bearing, distance, brightness):
+    def __init__(self,name, description, azimuth,altitude,  distance, brightness):
         self.name = name
         self.description = description
-        self.elevation=elevation
-        self.bearing=bearing
+        self.azimuth=azimuth
+        self.altitude=altitude
         self.distance=distance
         self.brightness = brightness
 
 
-class Menu:
-    def __init__(self,itemList):
-        # Note: ssd1306 displays normally have a height=64 and wifdth-128
-        self.itemList = itemList
-        self.height = I2CHEIGHT
-        self.width = I2CWIDTH
-        self.windowSize = I2CWINDOWSIZE
-        self.background = Image.new(ssd1309Device.mode, ssd1309Device.size, "black")
-        self.draw = ImageDraw.Draw(self.background)
-        ssd1309Device.display(self.background)
-    
+class Display:
+    def __init__(self):
+        # Note: ssd1306 displays normally have a height=64 and width-128
+        self._menuItems = []
+        self._height = I2CHEIGHT
+        self._width = I2CWIDTH
+        self._windowSize = I2CWINDOWSIZE
+        self._background = Image.new(ssd1309Device.mode, ssd1309Device.size, "black")
+        self._draw = ImageDraw.Draw(self._background)
+        ssd1309Device.display(self._background)
+
+    @property
+    def menuItems(self): 
+        return self._menuItems
+
+
+    @menuItems.setter 
+    def menuItems(self,menuItems):
+        self._menuItems = menuItems
 
     def showMenu(self):
         # display menu on the selected device
-        # When the menu is first display it starts displaying from the firstItem in the itemList
+        # When the menu is first display it starts displaying from the firstItem in the menuItems
         # and the initial window starts from the first item.
-        self.selectedItemIndex = 0
-        self.windowStartIndex=0
+        self._selectedItemIndex = 0
+        self._windowStartIndex=0
         selectedItem = None
+        # Wait for PINSELECT to return to unpressed position
+        while GPIO.input(PINSELECT)==0:
+            time.sleep(0.1)
         while selectedItem == None:
             selectedItem=self.processButtonPress()
             if selectedItem == None:
-                self.displayMenuOnI2c()
+                self.displayMenu()
             else:
                 return(selectedItem)
-            # time.sleep(0.1)
+
 
 
     def processButtonPress(self):
@@ -71,38 +82,41 @@ class Menu:
         # relavant selectedItemIndex and windowStartIndex values and redisplay the menu. If the select 
         # button is pressed then return the menuItem selected.
         if GPIO.input(PINUP)==0:
-            if self.selectedItemIndex>0:
-                self.selectedItemIndex-=1
-                if self.selectedItemIndex<self.windowStartIndex:
-                    self.windowStartIndex-=1
+            if self._selectedItemIndex>0:
+                self._selectedItemIndex-=1
+                if self._selectedItemIndex<self._windowStartIndex:
+                    self._windowStartIndex-=1
         if GPIO.input(PINDOWN)==0:
             print("Down")
-            if self.selectedItemIndex<(len(self.itemList)-1):
-                self.selectedItemIndex+=1
-                if self.selectedItemIndex>=self.windowStartIndex+self.windowSize:
-                    self.windowStartIndex+=1
+            if self._selectedItemIndex<(len(self._menuItems)-1):
+                self._selectedItemIndex+=1
+                if self._selectedItemIndex>=self._windowStartIndex+self._windowSize:
+                    self._windowStartIndex+=1
         if GPIO.input(PINSELECT)==0:
-            return(self.itemList[self.selectedItemIndex])
+            return(self._menuItems[self._selectedItemIndex])
         return None
 
-    def displaySelectionOnI2c(self,selectedItem):
-        print("selected:",selectedItem.name)
-        self.draw.rectangle(ssd1309Device.bounding_box, outline="black", fill="black")
-        self.draw.text((0, 0), selectedItem.name, fill="white")
-        ssd1309Device.display(self.background)
-        time.sleep(3)
+    def showSelection(self,selectedItem):
+        # print("showSelection:",selectedItem.name)
+        self.showText(selectedItem.name + "\n" + selectedItem.description)
 
-    def displayMenuOnI2c(self):
-        print("displayMenuOnI2c: ",self.selectedItemIndex,self.windowStartIndex)
-        self.draw.rectangle(ssd1309Device.bounding_box, outline="black", fill="black")
+    def displayMenu(self):
+        # print("displayMenu: ",self._selectedItemIndex,self._windowStartIndex)
+        self._draw.rectangle(ssd1309Device.bounding_box, outline="black", fill="black")
 
-        for index,item in enumerate(self.itemList[self.windowStartIndex:],start=self.windowStartIndex):
-            if index==self.selectedItemIndex:
+        for index,item in enumerate(self._menuItems[self._windowStartIndex:],start=self._windowStartIndex):
+            if index==self._selectedItemIndex:
                 selectionIndicator=">"
             else:
                 selectionIndicator="   "
-            self.draw.text((0, (index - self.windowStartIndex) * I2CFONTHEIGHT),selectionIndicator +  item.name, fill="white")
-        ssd1309Device.display(self.background)
+            self._draw.text((0, (index - self._windowStartIndex) * I2CFONTHEIGHT),selectionIndicator +  item.name, fill="white")
+        ssd1309Device.display(self._background)
+    
+    def showText(self,text,x=0,y=0):
+        # print("showText:")
+        self._draw.rectangle(ssd1309Device.bounding_box, outline="black", fill="black")
+        self._draw.multiline_text((x, y), text, fill="white")
+        ssd1309Device.display(self._background)
 
 
 
