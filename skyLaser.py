@@ -66,18 +66,7 @@ def doStars():
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     print(selectedItem)
-    #Get latest GPS info
-    gpsManager.readGPS()
-    # Create a timescale and ask the current time.
-    ts = load.timescale()
-    t = gpsManager.datetime
 
-    myLocation = earth + wgs84.latlon(42.3583 * N, 71.0636 * W)
-    # astrometric = myLocation.at(t).observe(mars)
-    # alt, az, d = astrometric.apparent().altaz()
-
-    # print(alt)
-    # print(az)
 
     # display.menuItems = menuItems
     # selectedItem = display.showMenu()

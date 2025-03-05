@@ -1,4 +1,4 @@
-from skyfield.api import Star, load
+from skyfield.api import Star, load,  wgs84,utc
 from skyfield.data import hipparcos
 from skyfield.named_stars import named_star_dict
 from settingsManager import SettingsManager
@@ -6,10 +6,13 @@ from datetime import datetime,timedelta,timezone
 import time
 
 class StarInfo(): 
-    def __init__(self,name,id,magnitude):
+    def __init__(self,name,id,magnitude,azimuth,altitude,distance):
         self._name = name
         self._id = id
         self._magnitude = magnitude
+        self._azimuth =azimuth
+        self._altitude = altitude
+        self._distance=distance
     
     @property
     def name(self): 
@@ -23,14 +26,27 @@ class StarInfo():
     def magnitude(self): 
         return self._magnitude
     
+    @property
+    def azimuth(self): 
+        return self._azimuth
+    
+    @property
+    def altitude(self): 
+        return self._altitude
+    
+    @property
+    def distance(self): 
+        return self._distance
+    
 
 class StarFinder():
-    def __init__(self,settingFile,longitude,latitude,currentDateTime,reload=False):
+    def __init__(self,settingFile,latitude,longitude,currentDateTime,reload=False):
         self.settingsManager = SettingsManager(settingFile)
         self.latitude = latitude
         self.longitude = longitude
         self.currentDateTime = currentDateTime
 
+        self.planets = load('de421.bsp')
         if reload :
             # Get a new copy of the hipparcos data 
             # needs internet access to work
@@ -67,19 +83,32 @@ class StarFinder():
                 return itemName
         return "*" + str(hip)
 
-    def getStars(self):
-        df = self.df[self.df['magnitude'] <= 1]
-        stars=[]
-        df['hip']
-        return named_star_dict.keys()
+    def getStarApparantCoordinate(self,hipId):
+        # Create a timescale and ask the current time.
+        ts = load.timescale()
+        t = ts.from_datetime(self.currentDateTime.replace(tzinfo=utc))
+        myStar= Star.from_dataframe(self.df.loc[hipId])
+        print("lat:",self.latitude,"lng:",self.longitude)
+        myLocation = self.planets['earth'] + wgs84.latlon(self.latitude , self.longitude )
+                 
+        myAstrometric = myLocation.at(t).observe(myStar)
+        # alt, az, d = myAstrometric.apparent().altaz()
+        alt, az, d = myAstrometric.apparent().altaz()
+        return {"altitude":alt,"azimuth":az,"distance":d}
+
 
     def getBrightStars(self):
         # Filter based on magnitude 
+        print("getBrightStars")
         magnitude_cutoff=self.settingsManager.get_setting("STAR_MAGNITUDE_CUTOFF")
         brightStars = self.df.query('magnitude <= @magnitude_cutoff')
         stars=[]
         for index, row in brightStars.iterrows():
-            stars.append(StarInfo(self.getStarName(index),index,row['magnitude']))
+            apparantInfo=self.getStarApparantCoordinate(index)
+            # print("info:",index,apparantInfo)
+            stars.append(StarInfo(self.getStarName(index),index,row['magnitude'],apparantInfo.get("azimuth"),apparantInfo.get("altitude"),apparantInfo.get("distance")))
+            
+            # print(index,self.getStarApparantCoordinate(index))
         return sorted(stars, key=lambda x: x.name)
 
         
@@ -88,4 +117,4 @@ class StarFinder():
 if __name__ == "__main__":
     sf=StarFinder("/home/pi/skylaser/settings.json",40.1748,-75.302,datetime.now(),reload=False)
     for star in sf.getBrightStars():
-        print(star.name,star.id,star.magnitude)
+        print(star.name,star.id,star.magnitude,star.azimuth,star.altitude,star.distance)
