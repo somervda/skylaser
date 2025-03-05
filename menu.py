@@ -29,8 +29,9 @@ I2CWINDOWSIZE=7
 I2CFONTHEIGHT=9
 
 class MenuItem():
-    def __init__(self,name, description, azimuth,altitude,  distance, brightness):
+    def __init__(self,name,id, description, azimuth,altitude,  distance, brightness):
         self.name = name
+        self.id = id
         self.description = description
         self.azimuth=azimuth
         self.altitude=altitude

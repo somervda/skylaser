@@ -3,5 +3,9 @@
     "AZAMUTH_MIN": 1120,
     "AZAMUTH_MAX": 2470,
     "ALTITUDE_MIN": 600,
-    "ALTITUDE_MAX": 2475
+    "ALTITUDE_MAX": 2475,
+    "//": "* For getting a list of stars to point at. 2 includes Polaris.",
+    "//": "* 3 is about minimum zisable with naked eye",
+    "//": "* see https://skytonight.org/mag",
+    "STAR_MAGNITUDE_CUTOFF": 2
 }
