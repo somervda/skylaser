@@ -4,7 +4,7 @@ import time
 from gpsManager import GPSManager
 from gimbalManager import GimbalManager
 
-from starFinder import StarFinder
+from celestialManager import CelestialManager
 
 SETTINGS_JSON = "/home/pi/skylaser/settings.json"
 
@@ -19,8 +19,8 @@ gm=GimbalManager(SETTINGS_JSON)
 display.showText("Getting GPS data...")
 gpsManager=GPSManager()
 if gpsManager.isValid :
-    print(gpsManager.latitude , gpsManager.longitude , gpsManager.altitude , gpsManager.datetime , gpsManager.timestamp)
-    gpsInfoText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] + "\nDate (GMT): " + str(gpsManager.datetime)[:10] + "\nTime (GMT): " + str(gpsManager.datetime)[11:19]
+    print(gpsManager.latitude , gpsManager.longitude , gpsManager.elevation , gpsManager.datetime , gpsManager.timestamp)
+    gpsInfoText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] + "\nDate (GMT): " + str(gpsManager.datetime)[:10] + "\nTime (GMT): " + str(gpsManager.datetime)[11:19] 
     print(gpsInfoText)
     display.showText(gpsInfoText)
     time.sleep(2)
@@ -28,8 +28,9 @@ else:
     display.showText("       Sky Laser!\nGPS faild\nTry restarting.")
     time.sleep(5)
     exit()
-    
-sf=StarFinder(SETTINGS_JSON,gpsManager.longitude ,gpsManager.latitude,gpsManager.rtcDateTime,reload=False)
+
+display.showText("Loading celestial data...")  
+cm=CelestialManager(SETTINGS_JSON,gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime,reload=False)
 
 def doStartMenu():
     menuItems = []
@@ -60,17 +61,18 @@ def doSetup():
 def doStars():
     
     menuItems = []
-    for brightStar in sf.getBrightStars():
-        if brightStar.name !="":
-            menuItems.append(MenuItem(brightStar.name + " (" + str(brightStar.magnitude) + ")",brightStar.id, "", 0, 0, 0, 0))
+    for brightStar in cm.brightStars:
+        menuItems.append(MenuItem(brightStar.name + " (" + str(brightStar.magnitude) + ")",brightStar.id, "", 0, 0, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     print(selectedItem)
-
-
-    # display.menuItems = menuItems
-    # selectedItem = display.showMenu()
-    # gm.move(selectedItem.azimuth,selectedItem.altitude)
+    # Get the objects most recent information on azimuth and altitude.
+    starCoordinates=cm.getHipApparantCoordinate(selectedItem.id,gpsManager.rtcDateTime)
+    print(starCoordinates)
+    actionText=selectedItem.name  + "\nAzimuth: " + str(starCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(starCoordinates.get("altitude").degrees)[:4] 
+    display.showText(actionText)
+    gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
+    time.sleep(5)
 
 # Main code
 

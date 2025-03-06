@@ -15,14 +15,14 @@ class GPSManager:
     def readGPS(self):
         self._latitude = None
         self._longitude = None
-        self._altitude = None
+        self._elevation = None
         self._timestamp = None
         self._datetime = None
         self._isValid = False
         # Will read the gps stream until all required values have been recieved
         print("readGPS...")
         startTime= time.time()
-        while not (self._longitude and self._latitude and self._altitude and self._datetime ): 
+        while not (self._longitude and self._latitude and self._elevation and self._datetime ): 
             if time.time()-startTime>180:
                 print("GPS timeout")
                 return False
@@ -38,7 +38,7 @@ class GPSManager:
                     # datetime_object = datetime.strptime(dateTimeSTR, "%Y-%m-%d %H:%M:$S")
                     print(self._datetime)
                 if hasattr(msg, 'altitude'):
-                    self._altitude = msg.altitude
+                    self._elevation = msg.altitude
                 if hasattr(msg, 'latitude'):
                     self._latitude = msg.latitude
                 if hasattr(msg, 'longitude'):
@@ -60,8 +60,8 @@ class GPSManager:
         return self._longitude
 
     @property
-    def altitude(self): 
-        return self._altitude
+    def elevation(self): 
+        return self._elevation
 
     @property
     def datetime(self): 

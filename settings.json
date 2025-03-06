@@ -7,5 +7,6 @@
     "//": "* For getting a list of stars to point at. 2 includes Polaris.",
     "//": "* 3 is about minimum zisable with naked eye",
     "//": "* see https://skytonight.org/mag",
-    "STAR_MAGNITUDE_CUTOFF": 2
+    "STAR_MAGNITUDE_CUTOFF": 2.5,
+    "STAR_ALTITUDE_CUTOFF": 10
 }
