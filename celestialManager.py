@@ -38,6 +38,45 @@ class CelestrialInfo():
     def distance(self): 
         return self._distance
 
+class Planet():
+    def __init__(self,name,planet,azimuth,altitude):
+        self._name = name
+        self._planet=planet
+        self._azimuth=azimuth
+        self._altitude=altitude   
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def planet(self):
+        return self._planet
+
+    @planet.setter
+    def planet(self, value):
+        self._planet = value
+
+    @property
+    def azimuth(self):
+        return self._azimuth
+
+    @azimuth.setter
+    def azimuth(self, value):
+        self._azimuth = value
+
+    @property
+    def altitude(self):
+        return self._altitude
+
+    @altitude.setter
+    def altitude(self, value):
+        self._altitude = value 
+
 class Constellation():
     def __init__(self,name,starName,description,hipId,azimuth,altitude):
         self._name = name
@@ -103,7 +142,10 @@ class CelestialManager():
         self._elevation = elevation
         self._currentDateTime = currentDateTime
 
-        self._planets = load('de421.bsp')
+        self._eph = load('de421.bsp')
+
+
+
         if reload :
             # Get a new copy of the hipparcos data 
             # needs internet access to work
@@ -140,11 +182,29 @@ class CelestialManager():
         self._constellations.append(Constellation('Pegasus ','Algenib  ','The Winged Horse ',1067,0,0))
         for constellation in self._constellations:
             apparant =self.getHipApparantCoordinate(constellation.hipId,currentDateTime=None)
-            # print(constellation.name,apparant)
             constellation.azimuth=apparant.get("azimuth").degrees
             constellation.altitude=apparant.get("altitude").degrees
-            # print(constellation.name,constellation.azimuth,constellation.altitude)
+        # Build a list of planets
+        self._planets=[]
+        
+        self._planets.append(Planet("Mercury",self._eph['Mercury Barycenter'],0,0))
+        self._planets.append(Planet("Venus",self._eph['Venus Barycenter'],0,0))
+        self._planets.append(Planet("Mars",self._eph['Mars Barycenter'],0,0))
+        self._planets.append(Planet("Jupiter",self._eph['Jupiter Barycenter'],0,0))
+        self._planets.append(Planet("Saturn",self._eph['Saturn Barycenter'],0,0))
+        self._planets.append(Planet("Uranus",self._eph['Uranus Barycenter'],0,0))
+        self._planets.append(Planet("Neptune",self._eph['Neptune Barycenter'],0,0))
+        self._planets.append(Planet("Sun",self._eph['Sun'],0,0))
+        self._planets.append(Planet("Moon",self._eph['Moon'],0,0))
+        for planet in self._planets:
+            apparent = self.getPlanetApparantCoordinate(planet.planet)
+            planet.altitude=apparent.get("altitude").degrees
+            planet.azimuth=apparent.get("azimuth").degrees
+            print(planet.name,planet.azimuth,planet.altitude)
 
+    @property
+    def planets(self): 
+        return self._planets
 
     @property
     def constellations(self): 
@@ -169,10 +229,21 @@ class CelestialManager():
         t = ts.from_datetime(currentDateTime.replace(tzinfo=utc))
         myStar= Star.from_dataframe(self._df.loc[hipId])
         # print("lat:",self.latitude,"lng:",self.longitude)
-        myLocation = self._planets['earth'] + wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
-                 
+        myLocation = self._eph['earth'] + wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
         myAstrometric = myLocation.at(t).observe(myStar)
         # alt, az, d = myAstrometric.apparent().altaz()
+        alt, az, d = myAstrometric.apparent().altaz()
+        return {"altitude":alt,"azimuth":az,"distance":d}
+
+    def getPlanetApparantCoordinate(self,planet,currentDateTime=None):
+        # Create a timescale and ask the current time.
+        # Optionally can use different datetime from when the object was created
+        if currentDateTime==None:
+            currentDateTime = self._currentDateTime
+        ts = load.timescale()
+        t = ts.from_datetime(currentDateTime.replace(tzinfo=utc))
+        myLocation = self._eph['earth'] + wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
+        myAstrometric = myLocation.at(t).observe(planet)
         alt, az, d = myAstrometric.apparent().altaz()
         return {"altitude":alt,"azimuth":az,"distance":d}
 
@@ -195,7 +266,7 @@ class CelestialManager():
 
 if __name__ == "__main__":
     # Load class and create celestral object lists
-    cm=CelestialManager(40.1748,-75.302,5000,datetime.now(),reload=False)
+    cm=CelestialManager(40.1748,-75.302,5000,datetime.utcnow(),reload=False)
     for star in cm.brightStars:
         print(star.name,star.id,star.magnitude,star.azimuth,star.altitude,star.distance)
 

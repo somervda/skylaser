@@ -9,5 +9,6 @@
     "//": "* see https://skytonight.org/mag",
     "STAR_MAGNITUDE_CUTOFF": 2.5,
     "STAR_ALTITUDE_CUTOFF": 10,
+    "PLANET_ALTITUDE_CUTOFF": 10,
     "CONSTELLATION_ALTITUDE_CUTOFF": 10
 }

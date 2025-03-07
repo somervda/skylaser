@@ -60,7 +60,7 @@ def doSetup():
 def doStars():
     menuItems = []
     for brightStar in cm.brightStars:
-        menuItems.append(MenuItem(brightStar.name + " (" + str(brightStar.magnitude) + ")",brightStar.id, "", 0, 0, 0, 0))
+        menuItems.append(MenuItem(brightStar.name + " (" + str(brightStar.magnitude) + ")",brightStar.id, "", brightStar.azimuth, brightStar.altitude, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     print(selectedItem)
@@ -77,7 +77,7 @@ def doConstellations():
     for constellation in cm.constellations:
         # Only show constellations that are abouve the horizon
         if constellation.altitude>settingsManager.get_setting("CONSTELLATION_ALTITUDE_CUTOFF"):
-            menuItems.append(MenuItem(constellation.name ,constellation.hipId, constellation.description, 0, 0, 0, 0))
+            menuItems.append(MenuItem(constellation.name ,constellation.hipId, constellation.description, constellation.azimuth, constellation.altitude, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     print(selectedItem)
@@ -87,6 +87,24 @@ def doConstellations():
     actionText=selectedItem.name  + "\n" + selectedItem.description + "\nAzimuth: " + str(starCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(starCoordinates.get("altitude").degrees)[:4] 
     display.showText(actionText)
     gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
+    time.sleep(5)
+
+def doPlanets():
+    menuItems = []
+    for index,planet in enumerate(cm.planets):
+        # Only show constellations that are abouve the horizon
+        if planet.altitude>settingsManager.get_setting("PLANET_ALTITUDE_CUTOFF"):
+            menuItems.append(MenuItem(planet.name ,index, "",  planet.azimuth, planet.altitude, 0,0))
+    display.menuItems = menuItems
+    selectedItem = display.showMenu()
+    print(selectedItem)
+    # Get the objects most recent information on azimuth and altitude.
+    print(selectedItem.id,cm.planets[selectedItem.id].planet)
+    planetCoordinates=cm.getPlanetApparantCoordinate(cm.planets[selectedItem.id].planet,gpsManager.rtcDateTime)
+    print(planetCoordinates)
+    actionText=selectedItem.name  + "\n" + "\nAzimuth: " + str(planetCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(planetCoordinates.get("altitude").degrees)[:4] 
+    display.showText(actionText)
+    gm.move(planetCoordinates.get("azimuth").degrees,planetCoordinates.get("altitude").degrees)
     time.sleep(5)
 
 # Main code
@@ -99,6 +117,8 @@ while True:
         doStars()
     if selectedItem.name =="Constellations":
         doConstellations()
+    if selectedItem.name =="Planets":
+        doPlanets()
     if selectedItem.name =="Exit":
         exit()
 
