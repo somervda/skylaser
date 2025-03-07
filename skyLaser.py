@@ -1,19 +1,18 @@
+import time
 from menu import Display,MenuItem
 from datetime import datetime
-import time
 from gpsManager import GPSManager
 from gimbalManager import GimbalManager
-
 from celestialManager import CelestialManager
+from settingsManager import SettingsManager
 
-SETTINGS_JSON = "/home/pi/skylaser/settings.json"
-
-
+print("\n\nStarting Skylaser")
 
 # Initializations
 display= Display()
 display.showText("Starting SkyLaser...")
-gm=GimbalManager(SETTINGS_JSON)
+gm=GimbalManager()
+settingsManager=SettingsManager("settings.json")
 
 # Need GPS info to initialize the starFinder
 display.showText("Getting GPS data...")
@@ -30,7 +29,7 @@ else:
     exit()
 
 display.showText("Loading celestial data...")  
-cm=CelestialManager(SETTINGS_JSON,gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime,reload=False)
+cm=CelestialManager(gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime,reload=False)
 
 def doStartMenu():
     menuItems = []
@@ -59,7 +58,6 @@ def doSetup():
     gm.move(selectedItem.azimuth,selectedItem.altitude)
 
 def doStars():
-    
     menuItems = []
     for brightStar in cm.brightStars:
         menuItems.append(MenuItem(brightStar.name + " (" + str(brightStar.magnitude) + ")",brightStar.id, "", 0, 0, 0, 0))
@@ -74,12 +72,24 @@ def doStars():
     gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
     time.sleep(5)
 
+def doConstellations():
+    menuItems = []
+    for constellation in cm.constellations:
+        # Only show constellations that are abouve the horizon
+        if constellation.altitude>settingsManager.get_setting("CONSTELLATION_ALTITUDE_CUTOFF"):
+            menuItems.append(MenuItem(constellation.name ,constellation.hipId, constellation.description, 0, 0, 0, 0))
+    display.menuItems = menuItems
+    selectedItem = display.showMenu()
+    print(selectedItem)
+    # Get the objects most recent information on azimuth and altitude.
+    starCoordinates=cm.getHipApparantCoordinate(selectedItem.id,gpsManager.rtcDateTime)
+    print(starCoordinates)
+    actionText=selectedItem.name  + "\n" + selectedItem.description + "\nAzimuth: " + str(starCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(starCoordinates.get("altitude").degrees)[:4] 
+    display.showText(actionText)
+    gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
+    time.sleep(5)
+
 # Main code
-
-
-
-
-
 while True:
     print("RTC datetime:",gpsManager.rtcDateTime)
     selectedItem=doStartMenu()
@@ -87,6 +97,8 @@ while True:
         doSetup()
     if selectedItem.name =="Stars":
         doStars()
+    if selectedItem.name =="Constellations":
+        doConstellations()
     if selectedItem.name =="Exit":
         exit()
 

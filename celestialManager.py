@@ -37,11 +37,67 @@ class CelestrialInfo():
     @property
     def distance(self): 
         return self._distance
+
+class Constellation():
+    def __init__(self,name,starName,description,hipId,azimuth,altitude):
+        self._name = name
+        self._starName = starName
+        self._description=description
+        self._hipId=hipId
+        self._azimuth=azimuth
+        self._altitude=altitude
     
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
+    @property
+    def starName(self):
+        return self._starName
+
+    @starName.setter
+    def starName(self, starName):
+        self._starName = starName
+
+    @property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        self._description = description
+
+    @property
+    def hipId(self):
+        return self._hipId
+
+    @hipId.setter
+    def hipId(self, hipId):
+        self._hipId = hipId
+
+    @property
+    def azimuth(self):
+        return self._azimuth
+
+    @azimuth.setter
+    def azimuth(self, azimuth):
+        self._azimuth = azimuth
+
+    @property
+    def altitude(self):
+        return self._altitude
+
+    @altitude.setter
+    def altitude(self, altitude):
+        self._altitude = altitude
 
 class CelestialManager():
-    def __init__(self,settingFile,latitude,longitude,elevation,currentDateTime,reload=False):
-        self._settingsManager = SettingsManager(settingFile)
+    def __init__(self,latitude,longitude,elevation,currentDateTime,reload=False):
+        self._settingsManager = SettingsManager("settings.json")
         self._latitude = latitude
         self._longitude = longitude
         self._elevation = elevation
@@ -63,7 +119,36 @@ class CelestialManager():
                 self._df = hipparcos.load_dataframe(f)
         # Save a list of brightStars
         self._brightStars=self.getBrightStars()
+        # Create a list of the main constilations
+        self._constellations=[]
+        self._constellations.append(Constellation('Orion  ','Rigel  ','The Hunter',24436,0,0))
+        self._constellations.append(Constellation('Ursa Major','Dubhe  ','Big Dipper ',54061,0,0))
+        self._constellations.append(Constellation('Ursa Minor','Polaris  ','Little Dipper ',11767,0,0))
+        self._constellations.append(Constellation('Cassiopeia ','Schedar','The queen of Aethiopia',3179,0,0))
+        self._constellations.append(Constellation('Cygnus ','Deneb ','The Swan ',102098,0,0))
+        self._constellations.append(Constellation('Canis Major ) ','Sirius  ','The Big Dog',32349,0,0))
+        self._constellations.append(Constellation('Canis Minor  ','Procyon  ','The Little Dog',37279,0,0))
+        self._constellations.append(Constellation('Taurus  ','Aldebaran  ','The Bull',21421,0,0))
+        self._constellations.append(Constellation('Gemini  ','Pollux  ','The Twins',37826,0,0))
+        self._constellations.append(Constellation('Leo ','Regulus  ',' The Lion',49669,0,0))
+        self._constellations.append(Constellation('Virgo ','Spica  ','The Maiden ',65474,0,0))
+        self._constellations.append(Constellation('Scorpius ','Antares  ','The Scorpion ',80763,0,0))
+        self._constellations.append(Constellation('Sagittarius','Kaus Austrina  ',' The Archer ',90185,0,0))
+        self._constellations.append(Constellation('Capricornus ','Diphda  ','The Goat ',3419,0,0))
+        self._constellations.append(Constellation('Aquarius ','Sadr  ','The Water Bearer ',100453,0,0))
+        self._constellations.append(Constellation('Pisces ','Alpherg','The Fish ',7097,0,0))
+        self._constellations.append(Constellation('Pegasus ','Algenib  ','The Winged Horse ',1067,0,0))
+        for constellation in self._constellations:
+            apparant =self.getHipApparantCoordinate(constellation.hipId,currentDateTime=None)
+            # print(constellation.name,apparant)
+            constellation.azimuth=apparant.get("azimuth").degrees
+            constellation.altitude=apparant.get("altitude").degrees
+            # print(constellation.name,constellation.azimuth,constellation.altitude)
 
+
+    @property
+    def constellations(self): 
+        return self._constellations
 
     @property
     def brightStars(self): 
@@ -110,6 +195,9 @@ class CelestialManager():
 
 if __name__ == "__main__":
     # Load class and create celestral object lists
-    cm=CelestialManager("/home/pi/skylaser/settings.json",40.1748,-75.302,5000,datetime.now(),reload=False)
+    cm=CelestialManager(40.1748,-75.302,5000,datetime.now(),reload=False)
     for star in cm.brightStars:
         print(star.name,star.id,star.magnitude,star.azimuth,star.altitude,star.distance)
+
+    for constellation in cm.constellations:
+        print(constellation.name,constellation.description,constellation.azimuth,constellation.altitude)

@@ -3,8 +3,8 @@ from adafruit_servokit import ServoKit
 import time
 
 class GimbalManager:
-    def __init__(self,settingsFile):
-        self.settingsManager = SettingsManager(settingsFile)
+    def __init__(self):
+        self.settingsManager = SettingsManager("settings.json")
         self.kit = ServoKit(channels=16)
         # Set the gimbals range of motion to be 180 degrees, starting with 0 degrees pointing east
         # and degrees increasing in anti-clockwise direction. Servo 0 controls the azimuth on the gimbal
