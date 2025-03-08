@@ -1,9 +1,10 @@
-from skyfield.api import Star, load,  wgs84,utc,Angle
+from skyfield.api import Star, load,  wgs84,utc,Angle, EarthSatellite
 from skyfield.data import hipparcos
 from skyfield.named_stars import named_star_dict
 from settingsManager import SettingsManager
 from datetime import datetime,timedelta,timezone
 import time
+import csv
 
 class CelestrialInfo(): 
     def __init__(self,name,id,magnitude,azimuth,altitude,distance):
@@ -37,6 +38,55 @@ class CelestrialInfo():
     @property
     def distance(self): 
         return self._distance
+
+class Satellite():
+    def __init__(self,name,satellite,description,azimuth,altitude):
+        self._name = name
+        self._satellite=satellite
+        self._description=description
+        self._azimuth=azimuth
+        self._altitude=altitude  
+
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, name):
+        self._name = name
+    
+    @property
+    def satellite(self):
+        return self._satellite
+    
+    @satellite.setter
+    def satellite(self, satellite):
+        self._satellite = satellite
+
+    @property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        self._description = description
+    
+    @property
+    def azimuth(self):
+        return self._azimuth
+    
+    @azimuth.setter
+    def azimuth(self, azimuth):
+        self._azimuth = azimuth
+    
+    @property
+    def altitude(self):
+        return self._altitude
+    
+    @altitude.setter
+    def altitude(self, altitude):
+        self._altitude = altitude
+
 
 class Planet():
     def __init__(self,name,planet,azimuth,altitude):
@@ -135,32 +185,45 @@ class Constellation():
         self._altitude = altitude
 
 class CelestialManager():
-    def __init__(self,latitude,longitude,elevation,currentDateTime,reload=False):
+    def __init__(self,latitude,longitude,elevation,currentDateTime):
         self._settingsManager = SettingsManager("settings.json")
         self._latitude = latitude
         self._longitude = longitude
         self._elevation = elevation
         self._currentDateTime = currentDateTime
 
+        print("loading ephameris from satellites.csv")
+        with load.open('satellites.csv', mode='r') as f:
+            satData = list(csv.DictReader(f))
+        ts = load.timescale()
+        satellites = [EarthSatellite.from_omm(ts, fields) for fields in satData]
+        # print('Loaded', len(satellites), 'satellites',satellites,satellites[1].name)
+        self._satellites=[]
+        self.makeSatellite("HST",satellites,"Hubble Space Telescope")
+        self.makeSatellite("ISS (ZARYA)",satellites,"International Space Station")
+        self.makeSatellite("CSS (TIANHE)",satellites,"Chinese Space Station")
+        self.makeSatellite("VIASAT-1",satellites,"Large Canadian Com. Sat.")
+        self.makeSatellite("STARLINK-1073",satellites,"Starlink from 7Jan2020")
+        self.makeSatellite("STARLINK-32905",satellites,"Starlink from8Feb2025")
+        self.makeSatellite("LANDSAT 9",satellites,"U.S. Geological Survey 2021")
+        self.makeSatellite("NAVSTAR 68 (USA 242)",satellites,"GPS")
+        self.makeSatellite("IRIDIUM 139",satellites,"Sat. phone (LEO)")
+        self.makeSatellite("SES-5",satellites,"Sirius Radio - Sirius 5")
+        # for sat in self._satellites:
+        #     print(sat.name," - ",sat.satellite," - ",sat.description)
+
+
+
+        print("loading ephameris from  from de432.bsp")
         self._eph = load('de421.bsp')
-
-
-
-        if reload :
-            # Get a new copy of the hipparcos data 
-            # needs internet access to work
-            # Load to pandas dataframe 
-            with load.open(hipparcos.URL) as f:
-                print("loading dataframe from internet...")
-                self._df = hipparcos.load_dataframe(f)
-        else:
-            # Use hipparcos data hip_main.dat
-            # Load to pandas dataframe - see https://pandas.pydata.org/docs/getting_started/overview.html 
-            with open('/home/pi/skylaser/hip_main.dat', 'r') as f:     # Do something with the file here
-                print("loading dataframe from hip_main.dat")
-                self._df = hipparcos.load_dataframe(f)
+        print("loading dataframe from hip_main.dat")
+        # Use hipparcos data hip_main.dat
+        # Load to pandas dataframe - see https://pandas.pydata.org/docs/getting_started/overview.html 
+        with open('/home/pi/skylaser/hip_main.dat', 'r') as f:     # Do something with the file here
+            self._df = hipparcos.load_dataframe(f)
         # Save a list of brightStars
         self._brightStars=self.getBrightStars()
+
         # Create a list of the main constilations
         self._constellations=[]
         self._constellations.append(Constellation('Orion  ','Rigel  ','The Hunter',24436,0,0))
@@ -200,11 +263,15 @@ class CelestialManager():
             apparent = self.getPlanetApparantCoordinate(planet.planet)
             planet.altitude=apparent.get("altitude").degrees
             planet.azimuth=apparent.get("azimuth").degrees
-            print(planet.name,planet.azimuth,planet.altitude)
+
 
     @property
     def planets(self): 
         return self._planets
+
+    @property
+    def satellites(self): 
+        return self._satellites
 
     @property
     def constellations(self): 
@@ -219,6 +286,15 @@ class CelestialManager():
             if hip == itemHip:
                 return itemName
         return "*" + str(hip)
+
+    def makeSatellite(self,name,satellites,description):
+        for sat in satellites:
+            if sat.name == name:
+                self._satellites.append(Satellite(name,sat,description,0,0))
+                return True
+        print("Not found:",name)
+        return False
+
 
     def getHipApparantCoordinate(self,hipId,currentDateTime=None):
         # Create a timescale and ask the current time.
@@ -266,7 +342,7 @@ class CelestialManager():
 
 if __name__ == "__main__":
     # Load class and create celestral object lists
-    cm=CelestialManager(40.1748,-75.302,5000,datetime.utcnow(),reload=False)
+    cm=CelestialManager(40.1748,-75.302,5000,datetime.utcnow())
     for star in cm.brightStars:
         print(star.name,star.id,star.magnitude,star.azimuth,star.altitude,star.distance)
 

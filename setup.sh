@@ -32,6 +32,9 @@ pip install skyfield --break-system-packages
 
 pip install pandas --break-system-packages
 
+# Needed to support de431 download of you get a ceritificate error
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org ssd.jpl.nasa.gov --break-system-packages
+
 export PATH=$PATH:/home/pi/.local/bin
 
 # Install skyfield https://rhodesmill.org/skyfield/

@@ -5,10 +5,13 @@ from gpsManager import GPSManager
 from gimbalManager import GimbalManager
 from celestialManager import CelestialManager
 from settingsManager import SettingsManager
+from downloadManager import DownloadManager
 
 print("\n\nStarting Skylaser")
 
 # Initializations
+dm=DownloadManager()
+hasInternet=dm.checkInternet()
 display= Display()
 display.showText("Starting SkyLaser...")
 gm=GimbalManager()
@@ -29,7 +32,7 @@ else:
     exit()
 
 display.showText("Loading celestial data...")  
-cm=CelestialManager(gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime,reload=False)
+cm=CelestialManager(gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime)
 
 def doStartMenu():
     menuItems = []
@@ -45,17 +48,25 @@ def doStartMenu():
 def doSetup():
     menuItems = []
     menuItems.append(MenuItem("Move to 0,0",0, "", 0, 0, 0, 0))
-    menuItems.append(MenuItem("Move to 90,0",0, "", 90, 0, 0, 0))
-    menuItems.append(MenuItem("Move to 180,0",0, "", 180, 0, 0, 0))
-    menuItems.append(MenuItem("Move to 270,0", 0,"", 270, 0, 0, 0))
-    menuItems.append(MenuItem("Move to 0,45",0, "", 0, 45, 0, 0))
-    menuItems.append(MenuItem("Move to 90,45",0, "", 90, 45, 0, 0))
-    menuItems.append(MenuItem("Move to 180,45",0, "", 180, 45, 0, 0))
-    menuItems.append(MenuItem("Move to 270,45",0, "", 270, 45, 0, 0))
-    menuItems.append(MenuItem("Move to 0,90", 0,"", 0, 90, 0, 0))
+    menuItems.append(MenuItem("Move to 90,0",1, "", 90, 0, 0, 0))
+    menuItems.append(MenuItem("Move to 180,0",2, "", 180, 0, 0, 0))
+    menuItems.append(MenuItem("Move to 270,0", 3,"", 270, 0, 0, 0))
+    menuItems.append(MenuItem("Move to 0,45",4, "", 0, 45, 0, 0))
+    menuItems.append(MenuItem("Move to 90,45",5, "", 90, 45, 0, 0))
+    menuItems.append(MenuItem("Move to 180,45",6, "", 180, 45, 0, 0))
+    menuItems.append(MenuItem("Move to 270,45",7, "", 270, 45, 0, 0))
+    menuItems.append(MenuItem("Move to 0,90", 8,"", 0, 90, 0, 0))
+    if hasInternet:
+        menuItems.append(MenuItem("Download Data...", 9,"", 0, 0, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
-    gm.move(selectedItem.azimuth,selectedItem.altitude)
+    if selectedItem.id<=8:
+        gm.move(selectedItem.azimuth,selectedItem.altitude)
+    if selectedItem.id==9:
+        display.showText("Getting Hippacos...")
+        dm.downloadHippacos()
+        display.showText("Getting De421...")
+        dm.downloadDe421()
 
 def doStars():
     menuItems = []
@@ -107,6 +118,12 @@ def doPlanets():
     gm.move(planetCoordinates.get("azimuth").degrees,planetCoordinates.get("altitude").degrees)
     time.sleep(5)
 
+def doSatellites():
+    menuItems = []
+    for index,satellite in enumerate(cm.satellites):
+        menuItems.append(MenuItem(satellite.name ,index, "",  0, 0, 0,0))
+    display.menuItems = menuItems
+    selectedItem = display.showMenu()
 # Main code
 while True:
     print("RTC datetime:",gpsManager.rtcDateTime)
@@ -115,6 +132,8 @@ while True:
         doSetup()
     if selectedItem.name =="Stars":
         doStars()
+    if selectedItem.name =="Satellites":
+        doSatellites()
     if selectedItem.name =="Constellations":
         doConstellations()
     if selectedItem.name =="Planets":
