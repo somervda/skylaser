@@ -1,85 +1,24 @@
+
+
+Starting Skylaser
+You are connected to the internet.
+Settings loaded successfully.
 Settings loaded successfully.
 readGPS...
-2025-03-06 17:09:02+00:00
-2025-03-06 17:09:02+00:00
-GPS: 2025-03-06 17:09:02+00:00  RTC: 2025-03-06 17:09:06.207589+00:00  Delta: -1 day, 23:59:55.792482
-40.174826833333334 -75.30210283333334 88.2 2025-03-06 17:09:02+00:00 1741280942.0
+2025-03-09 12:46:32+00:00
+2025-03-09 12:46:32+00:00
+GPS: 2025-03-09 12:46:32+00:00  RTC: 2025-03-09 12:45:23.125866+00:00  Delta: 0:01:08.874222
+40.174850666666664 -75.30218133333334 97.4 2025-03-09 12:46:32+00:00 1741524392.0
 Latitude: 40.1748
 Longitude: -75.302
-Date (GMT): 2025-03-06
-Time (GMT): 17:09:02
+Date (GMT): 2025-03-09
+Time (GMT): 12:46:32
 Settings loaded successfully.
+loading ephameris from satellites.csv
+loading ephameris from  from de432.bsp
 loading dataframe from hip_main.dat
 getBrightStars
-RTC datetime: 2025-03-06 17:09:21.646801+00:00
-Down
-Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f81c55c90>
-{'altitude': <Angle 44deg 55' 54.7">, 'azimuth': <Angle 68deg 10' 12.3">, 'distance': <Distance 5.8698e+06 au>}
-azimuth: 68.17008110314578  altitude: 44.93185096458787  servoAzimuth: 21.829918896854224  servoAltitude: 44.93185096458787
-RTC datetime: 2025-03-06 17:09:50.679581+00:00
-Down
-Down
-Down
-Down
-Down
-Settings loaded successfully.
-readGPS...
-2025-03-06 17:13:40+00:00
-2025-03-06 17:13:40+00:00
-GPS: 2025-03-06 17:13:40+00:00  RTC: 2025-03-06 17:13:40.887747+00:00  Delta: -1 day, 23:59:59.112302
-40.1748825 -75.3021235 50.0 2025-03-06 17:13:40+00:00 1741281220.0
-Latitude: 40.1748
-Longitude: -75.302
-Date (GMT): 2025-03-06
-Time (GMT): 17:13:40
-Settings loaded successfully.
-loading dataframe from hip_main.dat
-getBrightStars
-RTC datetime: 2025-03-06 17:14:03.860804+00:00
-Down
-Down
-Down
-Down
-Down
-Settings loaded successfully.
-readGPS...
-2025-03-06 17:16:24+00:00
-2025-03-06 17:16:24+00:00
-GPS: 2025-03-06 17:16:24+00:00  RTC: 2025-03-06 17:14:56.873850+00:00  Delta: 0:01:27.126279
-40.17476116666667 -75.3021865 127.3 2025-03-06 17:16:24+00:00 1741281384.0
-Latitude: 40.1747
-Longitude: -75.302
-Date (GMT): 2025-03-06
-Time (GMT): 17:16:24
-Settings loaded successfully.
-loading dataframe from hip_main.dat
-getBrightStars
-RTC datetime: 2025-03-06 17:16:37.432807+00:00
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f7570b150>
-{'altitude': <Angle 53deg 55' 53.9">, 'azimuth': <Angle 219deg 19' 04.7">, 'distance': <Distance 4.25288e+07 au>}
-azimuth: 219.31796248505046  altitude: 53.93163260407395  servoAzimuth: 50.68203751494954  servoAltitude: 126.06836739592606
-RTC datetime: 2025-03-06 17:18:28.143395+00:00
+RTC datetime: 2025-03-09 12:46:51.000020+00:00
 Down
 Down
 Down
@@ -88,20 +27,24 @@ Down
 
 
 Starting Skylaser
+You are connected to the internet.
+Settings loaded successfully.
 Settings loaded successfully.
 readGPS...
-2025-03-06 17:20:41+00:00
-2025-03-06 17:20:41+00:00
-GPS: 2025-03-06 17:20:41+00:00  RTC: 2025-03-06 17:20:48.370475+00:00  Delta: -1 day, 23:59:52.629603
-40.174860333333335 -75.30209533333333 67.1 2025-03-06 17:20:41+00:00 1741281641.0
-Latitude: 40.1748
+2025-03-09 18:19:44+00:00
+2025-03-09 18:19:44+00:00
+GPS: 2025-03-09 18:19:44+00:00  RTC: 2025-03-09 18:19:03.247022+00:00  Delta: 0:00:40.753060
+40.17494383333333 -75.30219116666666 76.5 2025-03-09 18:19:44+00:00 1741544384.0
+Latitude: 40.1749
 Longitude: -75.302
-Date (GMT): 2025-03-06
-Time (GMT): 17:20:41
+Date (GMT): 2025-03-09
+Time (GMT): 18:19:44
 Settings loaded successfully.
+loading ephameris from satellites.csv
+loading ephameris from  from de432.bsp
 loading dataframe from hip_main.dat
 getBrightStars
-RTC datetime: 2025-03-06 17:21:06.788557+00:00
+RTC datetime: 2025-03-09 18:20:03.030585+00:00
 Down
 Down
 Down
@@ -110,96 +53,25 @@ Down
 
 
 Starting Skylaser
+You are connected to the internet.
 Settings loaded successfully.
 Settings loaded successfully.
 readGPS...
-2025-03-07 16:31:03+00:00
-2025-03-07 16:31:03+00:00
-GPS: 2025-03-07 16:31:03+00:00  RTC: 2025-03-07 16:30:32.266579+00:00  Delta: 0:00:30.733494
-40.17504066666667 -75.30177766666667 120.7 2025-03-07 16:31:03+00:00 1741365063.0
-Latitude: 40.1750
-Longitude: -75.301
-Date (GMT): 2025-03-07
-Time (GMT): 16:31:03
+2025-03-09 18:38:32+00:00
+2025-03-09 18:38:32+00:00
+GPS: 2025-03-09 18:38:32+00:00  RTC: 2025-03-09 18:38:15.133513+00:00  Delta: 0:00:16.866573
+40.174873 -75.30212866666666 87.0 2025-03-09 18:38:32+00:00 1741545512.0
+Latitude: 40.1748
+Longitude: -75.302
+Date (GMT): 2025-03-09
+Time (GMT): 18:38:32
 Settings loaded successfully.
+loading ephameris from satellites.csv
+loading ephameris from  from de432.bsp
 loading dataframe from hip_main.dat
 getBrightStars
-RTC datetime: 2025-03-07 16:31:17.459446+00:00
+RTC datetime: 2025-03-09 18:38:50.097042+00:00
 Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f89322310>
-{'altitude': <Angle 38deg 53' 00.9">, 'azimuth': <Angle 64deg 57' 12.0">, 'distance': <Distance 5.8698e+06 au>}
-azimuth: 64.95333901524754  altitude: 38.88357272037534  servoAzimuth: 25.046660984752464  servoAltitude: 38.88357272037534
-RTC datetime: 2025-03-07 16:31:29.646703+00:00
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f983479d0>
-{'altitude': <Angle 24deg 25' 10.9">, 'azimuth': <Angle 145deg 28' 59.0">, 'distance': <Distance 6.05948e+06 au>}
-azimuth: 145.4830585141178  altitude: 24.4196997798781  servoAzimuth: 124.5169414858822  servoAltitude: 155.5803002201219
-RTC datetime: 2025-03-07 16:32:16.540124+00:00
-Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f983479d0>
-{'altitude': <Angle 39deg 20' 08.7">, 'azimuth': <Angle 65deg 12' 12.7">, 'distance': <Distance 5.8698e+06 au>}
-azimuth: 65.20351578523946  altitude: 39.335743973105785  servoAzimuth: 24.79648421476054  servoAltitude: 39.335743973105785
-RTC datetime: 2025-03-07 16:34:07.616778+00:00
-Down
-Down
-<menu.MenuItem object at 0x7f897fb210>
-{'altitude': <Angle 11deg 58' 01.6">, 'azimuth': <Angle 356deg 24' 09.8">, 'distance': <Distance 7.81898e+06 au>}
-azimuth: 356.40272032821457  altitude: 11.967111444396798  servoAzimuth: 93.59727967178543  servoAltitude: 11.967111444396798
-RTC datetime: 2025-03-07 16:34:22.806816+00:00
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f897fb210>
-{'altitude': <Angle 40deg 25' 08.0">, 'azimuth': <Angle 00deg 45' 17.1">, 'distance': <Distance 2.72837e+07 au>}
-azimuth: 0.7547580587736015  altitude: 40.41887570921925  servoAzimuth: 89.2452419412264  servoAltitude: 40.41887570921925
-RTC datetime: 2025-03-07 16:34:40.382581+00:00
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-azimuth: 90  altitude: 45  servoAzimuth: 0  servoAltitude: 45
-RTC datetime: 2025-03-07 16:34:47.204276+00:00
-Down
-Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f89317950>
-{'altitude': <Angle 24deg 54' 06.0">, 'azimuth': <Angle 146deg 32' 21.1">, 'distance': <Distance 6.05948e+06 au>}
-azimuth: 146.53920303679044  altitude: 24.901672569571975  servoAzimuth: 123.46079696320956  servoAltitude: 155.09832743042801
-RTC datetime: 2025-03-07 16:36:46.644342+00:00
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-Down
-<menu.MenuItem object at 0x7f89325ad0>
-{'altitude': <Angle 68deg 22' 01.7">, 'azimuth': <Angle 113deg 17' 39.7">, 'distance': <Distance 6.13883e+06 au>}
-azimuth: 113.29436005405768  altitude: 68.36713130148378  servoAzimuth: 156.70563994594232  servoAltitude: 111.63286869851622
-RTC datetime: 2025-03-07 16:37:03.923291+00:00
 Down
 Down
 Down

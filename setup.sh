@@ -101,3 +101,10 @@ sudo pip3 install smbus2 --break-system-packages
 # # sudo systemctl start iotWS.service 
 # sudo systemctl status iotWS.service -n50
 
+# Network notes
+# Use: sudo nmcli -p connection show 
+# to list network connections
+
+# Use: sudo nmtui
+# to update connections
+
