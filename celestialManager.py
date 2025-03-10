@@ -192,39 +192,94 @@ class CelestialManager():
         self._elevation = elevation
         self._currentDateTime = currentDateTime
 
-        print("loading ephameris from  from de432.bsp")
+        # Load the ephameris for planets first. Information about the earth is
+        # required for calculations
+        print("Loading ephameris from  from de421.bsp")
         self._eph = load('de421.bsp')
+        # Use hipparcos data hip_main.dat
+        # Load to pandas dataframe - see https://pandas.pydata.org/docs/getting_started/overview.html 
+        print("Loading dataframe from hip_main.dat")
+        with open('/home/pi/skylaser/hip_main.dat', 'r') as f:     
+            self._df = hipparcos.load_dataframe(f)
 
+        self.buildSatellites()
+        # Save a list of brightStars
+        self._brightStars=self.getBrightStars()
+        # Create a list of the main constilations
+        self.buildConstellations()
+        # Build a list of planets
+        self.buildPlanets()
+
+
+
+    @property
+    def planets(self): 
+        return self._planets
+
+    @property
+    def satellites(self): 
+        return self._satellites
+
+    @property
+    def constellations(self): 
+        return self._constellations
+
+    @property
+    def brightStars(self): 
+        return self._brightStars
+
+    def buildSatellites(self):
+        # Build a list of important satellites 
         print("loading ephameris from satellites.csv")
         with load.open('satellites.csv', mode='r') as f:
             satData = list(csv.DictReader(f))
+        print("Building Satellites...")
+        self._satellites=[]
+        self.makeSatellite("HST",satData,"Hubble Space Telescope")
+        self.makeSatellite("ISS (ZARYA)",satData,"International Space Station")
+        self.makeSatellite("CSS (TIANHE)",satData,"Chinese Space Station")
+        self.makeSatellite("VIASAT-1",satData,"Large Canadian Com. Sat. \nGeosyncronous")
+        self.makeSatellite("STARLINK-1073",satData,"Starlink from 7Jan2020")
+        self.makeSatellite("STARLINK-32905",satData,"Starlink from8Feb2025")
+        self.makeSatellite("LANDSAT 9",satData,"U.S. Geological Survey 2021")
+        self.makeSatellite("NAVSTAR 68 (USA 242)",satData,"GPS")
+        self.makeSatellite("IRIDIUM 139",satData,"Sat. phone (LEO)")
+        self.makeSatellite("SES-5",satData,"Sirius Radio - Sirius 5")
+        self.makeSatellite("AMC-3",satData,"Commercial broadcasts\nGeosyncronous")
+
+
+    def makeSatellite(self,name,satData,description):
+        # Add details about apparent position of the satellite, if the satellite is 
+        # abouve the horizon then add it to the satellite list
         ts = load.timescale()
         satellites = [EarthSatellite.from_omm(ts, fields) for fields in satData]
-        # print('Loaded', len(satellites), 'satellites',satellites,satellites[1].name)
-        self._satellites=[]
-        self.makeSatellite("HST",satellites,"Hubble Space Telescope")
-        self.makeSatellite("ISS (ZARYA)",satellites,"International Space Station")
-        self.makeSatellite("CSS (TIANHE)",satellites,"Chinese Space Station")
-        self.makeSatellite("VIASAT-1",satellites,"Large Canadian Com. Sat. \nGeosyncronous")
-        self.makeSatellite("STARLINK-1073",satellites,"Starlink from 7Jan2020")
-        self.makeSatellite("STARLINK-32905",satellites,"Starlink from8Feb2025")
-        self.makeSatellite("LANDSAT 9",satellites,"U.S. Geological Survey 2021")
-        self.makeSatellite("NAVSTAR 68 (USA 242)",satellites,"GPS")
-        self.makeSatellite("IRIDIUM 139",satellites,"Sat. phone (LEO)")
-        self.makeSatellite("SES-5",satellites,"Sirius Radio - Sirius 5")
-        self.makeSatellite("AMC-3",satellites,"Commercial broadcasts\nGeosyncronous")
-        for sat in self._satellites:
-            print(sat.name," - ",sat.satellite," - ",sat.description)
+        for sat in satellites:
+            if sat.name == name:
+                apparent = self.getSatelliteApparantCoordinate(sat)
+                # Above the horizon?
+                if apparent.get("altitude").degrees>0:
+                    self._satellites.append(Satellite(name,sat,description,apparent.get("azimuth").degrees,apparent.get("altitude").degrees))
+                    return True
+                else:
+                    # print(name," is too low, not added.",apparent.get("azimuth").degrees,apparent.get("altitude").degrees)
+                    return False
+        # print("Not found:",name)
+        return False
 
-        print("loading dataframe from hip_main.dat")
-        # Use hipparcos data hip_main.dat
-        # Load to pandas dataframe - see https://pandas.pydata.org/docs/getting_started/overview.html 
-        with open('/home/pi/skylaser/hip_main.dat', 'r') as f:     # Do something with the file here
-            self._df = hipparcos.load_dataframe(f)
-        # Save a list of brightStars
-        self._brightStars=self.getBrightStars()
+    def getSatelliteApparantCoordinate(self,satellite,currentDateTime=None):
+        # Create a timescale and ask the current time.
+        # Optionally can use different datetime from when the object was created
+        if currentDateTime==None:
+            currentDateTime = self._currentDateTime
+        ts = load.timescale()
+        t = ts.from_datetime(currentDateTime.replace(tzinfo=utc))
+        myLocation =  self._eph['earth'] +  wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
+        satPosition =  self._eph['earth'] +  satellite
+        alt, az, d = myLocation.at(t).observe(satPosition).apparent().altaz()
+        return {"altitude":alt,"azimuth":az,"distance":d}
 
-        # Create a list of the main constilations
+    def buildConstellations(self):
+        print("Building Constellations...")
         self._constellations=[]
         self._constellations.append(Constellation('Orion  ','Rigel  ','The Hunter',24436,0,0))
         self._constellations.append(Constellation('Ursa Major','Dubhe  ','Big Dipper ',54061,0,0))
@@ -247,9 +302,10 @@ class CelestialManager():
             apparant =self.getHipApparantCoordinate(constellation.hipId,currentDateTime=None)
             constellation.azimuth=apparant.get("azimuth").degrees
             constellation.altitude=apparant.get("altitude").degrees
-        # Build a list of planets
+
+    def buildPlanets(self):
+        print("Building planets...")
         self._planets=[]
-        
         self._planets.append(Planet("Mercury",self._eph['Mercury Barycenter'],0,0))
         self._planets.append(Planet("Venus",self._eph['Venus Barycenter'],0,0))
         self._planets.append(Planet("Mars",self._eph['Mars Barycenter'],0,0))
@@ -264,42 +320,23 @@ class CelestialManager():
             planet.altitude=apparent.get("altitude").degrees
             planet.azimuth=apparent.get("azimuth").degrees
 
-
-    @property
-    def planets(self): 
-        return self._planets
-
-    @property
-    def satellites(self): 
-        return self._satellites
-
-    @property
-    def constellations(self): 
-        return self._constellations
-
-    @property
-    def brightStars(self): 
-        return self._brightStars
+    def getPlanetApparantCoordinate(self,planet,currentDateTime=None):
+        # Create a timescale and ask the current time.
+        # Optionally can use different datetime from when the object was created
+        if currentDateTime==None:
+            currentDateTime = self._currentDateTime
+        ts = load.timescale()
+        t = ts.from_datetime(currentDateTime.replace(tzinfo=utc))
+        myLocation = self._eph['earth'] + wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
+        myAstrometric = myLocation.at(t).observe(planet)
+        alt, az, d = myAstrometric.apparent().altaz()
+        return {"altitude":alt,"azimuth":az,"distance":d}
 
     def getHipName(self,hip):
         for itemName, itemHip in named_star_dict.items():
             if hip == itemHip:
                 return itemName
         return "*" + str(hip)
-
-    def makeSatellite(self,name,satellites,description):
-        for sat in satellites:
-            if sat.name == name:
-                apparent = self.getSatelliteApparantCoordinate(sat)
-                if apparent.get("altitude").degrees>0:
-                    self._satellites.append(Satellite(name,sat,description,apparent.get("azimuth").degrees,apparent.get("altitude").degrees))
-                    return True
-                else:
-                    # print(name," is too low, not added.",apparent.get("azimuth").degrees,apparent.get("altitude").degrees)
-                    return False
-        # print("Not found:",name)
-        return False
-
 
     def getHipApparantCoordinate(self,hipId,currentDateTime=None):
         # Create a timescale and ask the current time.
@@ -316,40 +353,8 @@ class CelestialManager():
         alt, az, d = myAstrometric.apparent().altaz()
         return {"altitude":alt,"azimuth":az,"distance":d}
 
-    def getPlanetApparantCoordinate(self,planet,currentDateTime=None):
-        # Create a timescale and ask the current time.
-        # Optionally can use different datetime from when the object was created
-        if currentDateTime==None:
-            currentDateTime = self._currentDateTime
-        ts = load.timescale()
-        t = ts.from_datetime(currentDateTime.replace(tzinfo=utc))
-        myLocation = self._eph['earth'] + wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
-        myAstrometric = myLocation.at(t).observe(planet)
-        alt, az, d = myAstrometric.apparent().altaz()
-        return {"altitude":alt,"azimuth":az,"distance":d}
-
-    def getSatelliteApparantCoordinate(self,satellite,currentDateTime=None):
-        # Create a timescale and ask the current time.
-        # Optionally can use different datetime from when the object was created
-        if currentDateTime==None:
-            currentDateTime = self._currentDateTime
-        ts = load.timescale()
-        t = ts.from_datetime(currentDateTime.replace(tzinfo=utc))
-
-        myLocation =  self._eph['earth'] +  wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
-        satPosition =  self._eph['earth'] +  satellite
-
-
-        # myLocation = self._eph['earth'] + wgs84.latlon(self._latitude , self._longitude , elevation_m=self._elevation)
-        # myAstrometric = myLocation.at(t).observe(planet)
-
-        alt, az, d = myLocation.at(t).observe(satPosition).apparent().altaz()
-        # alt, az, d = myAstrometric.apparent()
-        return {"altitude":alt,"azimuth":az,"distance":d}
-
-
     def getBrightStars(self):
-        # Filter based on magnitude 
+        # Filter stars based on magnitude 
         print("getBrightStars")
         magnitude_cutoff=self._settingsManager.get_setting("STAR_MAGNITUDE_CUTOFF")
         brightStars = self._df.query('magnitude <= @magnitude_cutoff')
@@ -361,20 +366,18 @@ class CelestialManager():
                 stars.append(CelestrialInfo(self.getHipName(index),index,row['magnitude'],apparantInfo.get("azimuth"),apparantInfo.get("altitude"),apparantInfo.get("distance")))
         return sorted(stars, key=lambda x: x.name)
 
-        
-
-
 if __name__ == "__main__":
     # Load class and create celestral object lists
     cm=CelestialManager(40.1748,-75.302,5000,datetime.utcnow())
+    print("Stars")
     for star in cm.brightStars:
         print(star.name,star.id,star.magnitude,star.azimuth,star.altitude,star.distance)
-
+    print("Constellations")
     for constellation in cm.constellations:
         print(constellation.name,constellation.description,constellation.azimuth,constellation.altitude)
-
+    print("Planets")
     for planet in cm.planets:
         print(planet.name,planet.azimuth,planet.altitude)
-
+    print("Satellites")
     for satellite in cm.satellites:
         print(satellite.name,satellite.description,satellite.azimuth,satellite.altitude)

@@ -125,6 +125,22 @@ def doSatellites():
         menuItems.append(MenuItem(satellite.name ,index, "",  0, 0, 0,0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
+    # Get the objects most recent information on azimuth and altitude.
+    print(selectedItem.id,cm.satellites[selectedItem.id].name)
+    # Get the current coordinates for the selectedsatellite (They change quickly)
+    satelliteCoordinates=cm.getSatelliteApparantCoordinate(cm.satellites[selectedItem.id].satellite,gpsManager.rtcDateTime)
+    print(satelliteCoordinates)
+    if satelliteCoordinates.get("altitude").degrees>0:
+        actionText=selectedItem.name  + "\n" + cm.satellites[selectedItem.id].description + "\nAzimuth: " + str(satelliteCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(satelliteCoordinates.get("altitude").degrees)[:4] 
+        display.showText(actionText)
+        gm.move(satelliteCoordinates.get("azimuth").degrees,satelliteCoordinates.get("altitude").degrees)
+    else: 
+        actionText=selectedItem.name  + "\nIs gone below the\nhorizon" 
+        display.showText(actionText)
+    time.sleep(5)
+
+
+
 # Main code
 while True:
     print("RTC datetime:",gpsManager.rtcDateTime)
