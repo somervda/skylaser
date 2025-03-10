@@ -202,6 +202,7 @@ class CelestialManager():
         with open('/home/pi/skylaser/hip_main.dat', 'r') as f:     
             self._df = hipparcos.load_dataframe(f)
 
+        # Build lists of celestrial objects
         self.buildSatellites()
         # Save a list of brightStars
         self._brightStars=self.getBrightStars()
@@ -239,10 +240,17 @@ class CelestialManager():
         self.makeSatellite("ISS (ZARYA)",satData,"International Space Station")
         self.makeSatellite("CSS (TIANHE)",satData,"Chinese Space Station")
         self.makeSatellite("VIASAT-1",satData,"Large Canadian Com. Sat. \nGeosyncronous")
-        self.makeSatellite("STARLINK-1073",satData,"Starlink from 7Jan2020")
-        self.makeSatellite("STARLINK-32905",satData,"Starlink from8Feb2025")
+        self.makeSatellite("STARLINK-1073",satData,"Starlink")
+        self.makeSatellite("STARLINK-1202",satData,"Starlink")
+        self.makeSatellite("STARLINK-5498",satData,"Starlink ")
+        self.makeSatellite("STARLINK-30284",satData,"Starlink ")
+        self.makeSatellite("STARLINK-32907",satData,"Starlink ")
+        self.makeSatellite("STARLINK-31495",satData,"Starlink ")
+        self.makeSatellite("STARLINK-11407 [DTC]",satData,"Starlink ")
         self.makeSatellite("LANDSAT 9",satData,"U.S. Geological Survey 2021")
         self.makeSatellite("NAVSTAR 68 (USA 242)",satData,"GPS")
+        self.makeSatellite("GPS BIIF-6 (PRN 06)",satData,"GPS")
+        self.makeSatellite("GPS BIIRM-1 (PRN 17)",satData,"GPS")
         self.makeSatellite("IRIDIUM 139",satData,"Sat. phone (LEO)")
         self.makeSatellite("SES-5",satData,"Sirius Radio - Sirius 5")
         self.makeSatellite("AMC-3",satData,"Commercial broadcasts\nGeosyncronous")
@@ -256,8 +264,8 @@ class CelestialManager():
         for sat in satellites:
             if sat.name == name:
                 apparent = self.getSatelliteApparantCoordinate(sat)
-                # Above the horizon?
-                if apparent.get("altitude").degrees>0:
+                # Above the cuttoff angle?
+                if apparent.get("altitude").degrees>self._settingsManager.get_setting("SATELLITE_ALTITUDE_CUTOFF"):
                     self._satellites.append(Satellite(name,sat,description,apparent.get("azimuth").degrees,apparent.get("altitude").degrees))
                     return True
                 else:
@@ -285,19 +293,22 @@ class CelestialManager():
         self._constellations.append(Constellation('Ursa Major','Dubhe  ','Big Dipper ',54061,0,0))
         self._constellations.append(Constellation('Ursa Minor','Polaris  ','Little Dipper ',11767,0,0))
         self._constellations.append(Constellation('Cassiopeia ','Schedar','The queen of Aethiopia',3179,0,0))
-        self._constellations.append(Constellation('Cygnus ','Deneb ','The Swan ',102098,0,0))
-        self._constellations.append(Constellation('Canis Major ) ','Sirius  ','The Big Dog',32349,0,0))
-        self._constellations.append(Constellation('Canis Minor  ','Procyon  ','The Little Dog',37279,0,0))
-        self._constellations.append(Constellation('Taurus  ','Aldebaran  ','The Bull',21421,0,0))
-        self._constellations.append(Constellation('Gemini  ','Pollux  ','The Twins',37826,0,0))
-        self._constellations.append(Constellation('Leo ','Regulus  ',' The Lion',49669,0,0))
-        self._constellations.append(Constellation('Virgo ','Spica  ','The Maiden ',65474,0,0))
-        self._constellations.append(Constellation('Scorpius ','Antares  ','The Scorpion ',80763,0,0))
-        self._constellations.append(Constellation('Sagittarius','Kaus Austrina  ',' The Archer ',90185,0,0))
-        self._constellations.append(Constellation('Capricornus ','Diphda  ','The Goat ',3419,0,0))
-        self._constellations.append(Constellation('Aquarius ','Sadr  ','The Water Bearer ',100453,0,0))
-        self._constellations.append(Constellation('Pisces ','Alpherg','The Fish ',7097,0,0))
-        self._constellations.append(Constellation('Pegasus ','Algenib  ','The Winged Horse ',1067,0,0))
+        self._constellations.append(Constellation('Cygnus ','Deneb ','The Swan',102098,0,0))
+        self._constellations.append(Constellation('Canis Major ) ','Sirius','The Big Dog',32349,0,0))
+        self._constellations.append(Constellation('Canis Minor  ','Procyon','The Little Dog',37279,0,0))
+        self._constellations.append(Constellation('Pegasus','Algenib','The Winged Horse ',1067,0,0))
+        self._constellations.append(Constellation('Taurus  ','Aldebaran','The Bull Loyal, honest\nand hard-working\nApril 20 - May 20',21421,0,0))
+        self._constellations.append(Constellation('Gemini  ','Pollux','The Twins Adaptable\nperceptive and curious\nMay 21 - June 21',37826,0,0))
+        self._constellations.append(Constellation('Leo ','Regulus',' The Lion Confident\nleaders and action-orented\nJuly 23 - Aug 22',49669,0,0))
+        self._constellations.append(Constellation('Virgo ','Spica','The Maiden Perfectionists\nlogical and observant\nAug25 - Sept 22',65474,0,0))
+        self._constellations.append(Constellation('Scorpius ','Antares','The Scorpion Intense\npassionate and mysterious\nOct 23 - Nov 21',80763,0,0))
+        self._constellations.append(Constellation('Sagittarius','Kaus Austrina',' The Archer\nOptimistic, adventurous\nNov 22 - Dec 21',90185,0,0))
+        self._constellations.append(Constellation('Capricornus ','Diphda','The Goat Hardworking\npractical, and ambitious\nDec 22 - Jan 19 ',3419,0,0))
+        self._constellations.append(Constellation('Aquarius ','Sadr','The Water Bearer Independent\ncreative, and humanitarian\nJan 20 - Feb 18',100453,0,0))
+        self._constellations.append(Constellation('Pisces','Alpherg','The Fish Creative\nimaginative,kind and empathetic\nFebruary 19 to March 20',7097,0,0))
+        self._constellations.append(Constellation('Libra','Beta Librae','The Scales Sociable\ncharming, and diplomatic\nSept 23 and Oct 22',74785,0,0))
+        self._constellations.append(Constellation('Aries','Hamal','The Ram Bold\nambitious, and competitive\nMarch 21 - April 19',9884,0,0))
+        self._constellations.append(Constellation('Cancer','Tarf','The Crab Intuitive\nnurturing, and emotional\nJune 22 - July 22',40526,0,0))
         for constellation in self._constellations:
             apparant =self.getHipApparantCoordinate(constellation.hipId,currentDateTime=None)
             constellation.azimuth=apparant.get("azimuth").degrees
@@ -367,17 +378,20 @@ class CelestialManager():
         return sorted(stars, key=lambda x: x.name)
 
 if __name__ == "__main__":
+    # for itemName, itemHip in named_star_dict.items():
+    #     print(itemName,itemHip)
+    # exit()
     # Load class and create celestral object lists
     cm=CelestialManager(40.1748,-75.302,5000,datetime.utcnow())
     print("Stars")
     for star in cm.brightStars:
         print(star.name,star.id,star.magnitude,star.azimuth,star.altitude,star.distance)
-    print("Constellations")
+    print("\nConstellations")
     for constellation in cm.constellations:
         print(constellation.name,constellation.description,constellation.azimuth,constellation.altitude)
-    print("Planets")
+    print("\nPlanets")
     for planet in cm.planets:
         print(planet.name,planet.azimuth,planet.altitude)
-    print("Satellites")
+    print("\nSatellites")
     for satellite in cm.satellites:
         print(satellite.name,satellite.description,satellite.azimuth,satellite.altitude)

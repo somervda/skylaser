@@ -27,3 +27,7 @@ class SettingsManager:
         any: The value associated with the key if it exists, None otherwise.
         """
         return self.settings.get(key, None)
+
+if __name__ == "__main__":
+    sm=SettingsManager("settings.json")
+    print(sm.get_setting("AZAMUTH_MIN"))

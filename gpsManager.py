@@ -31,12 +31,12 @@ class GPSManager:
                 dataout =pynmea2.NMEAStreamReader()
                 msg=pynmea2.parse(newdata)
                 if hasattr(msg, 'datetime'):
-                    print( msg.datetime)
+                    # print( msg.datetime)
                     self._datetime = datetime.fromisoformat(str(msg.datetime))
                     # dateTimeSTR = str(msg.datetime.date()) + " " +str(msg.datetime.time())
                     # print("dateTimeSTR:",dateTimeSTR)
                     # datetime_object = datetime.strptime(dateTimeSTR, "%Y-%m-%d %H:%M:$S")
-                    print(self._datetime)
+                    # print(self._datetime)
                 if hasattr(msg, 'altitude'):
                     self._elevation = msg.altitude
                 if hasattr(msg, 'latitude'):
@@ -48,7 +48,7 @@ class GPSManager:
         # to get the rtc based datetime based on a correction between the GPS and basic RTC time
         # This is needed because the rtc usually is only set when the PIZero is connect to the internet
         self._rtcDeltaSeconds = self._datetime - datetime.now((timezone.utc)) 
-        print("GPS:",self._datetime," RTC:",datetime.now((timezone.utc))," Delta:",self._rtcDeltaSeconds )
+        # print("GPS:",self._datetime," RTC:",datetime.now((timezone.utc))," Delta:",self._rtcDeltaSeconds )
         return True
 
     @property
@@ -85,3 +85,11 @@ class GPSManager:
     def isValid(self):
         # Has succesfully collected GPS data
         return self._isValid
+
+if __name__ == "__main__":
+    gpsManager=GPSManager()
+    print("getting GPS data")
+    if gpsManager.readGPS() :
+        print("Lat:",gpsManager.latitude ," Lng:", gpsManager.longitude , " Elevation:",gpsManager.elevation , " datetime:",gpsManager.datetime ," Epoch seconds:", gpsManager.timestamp)
+    else:
+        print("gps read failed")

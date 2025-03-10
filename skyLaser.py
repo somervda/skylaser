@@ -14,7 +14,7 @@ dm=DownloadManager()
 hasInternet=dm.checkInternet()
 display= Display()
 display.showText("Starting SkyLaser...\nhasInternet:" + str(hasInternet))
-time.sleep(5)
+time.sleep(10)
 gm=GimbalManager()
 settingsManager=SettingsManager("settings.json")
 
@@ -57,13 +57,20 @@ def doSetup():
     menuItems.append(MenuItem("Move to 180,45",6, "", 180, 45, 0, 0))
     menuItems.append(MenuItem("Move to 270,45",7, "", 270, 45, 0, 0))
     menuItems.append(MenuItem("Move to 0,90", 8,"", 0, 90, 0, 0))
+    menuItems.append(MenuItem("Walk Sky", 9,"", 0, 0, 0, 0))
     if hasInternet:
-        menuItems.append(MenuItem("Download Data...", 9,"", 0, 0, 0, 0))
+        menuItems.append(MenuItem("Download Data...", 10,"", 0, 0, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     if selectedItem.id<=8:
         gm.move(selectedItem.azimuth,selectedItem.altitude)
     if selectedItem.id==9:
+        display.showText("Walking the sky...")
+        for azimuth in range(0,360,45):
+            for altitude in range(0,100,45):
+                gm.move(azimuth,altitude)
+        gm.move(0,0)
+    if selectedItem.id==10:
         display.showText("Getting Hippacos...")
         dm.downloadHippacos()
         display.showText("Getting De421...")
@@ -72,7 +79,7 @@ def doSetup():
 def doStars():
     menuItems = []
     for brightStar in cm.brightStars:
-        menuItems.append(MenuItem(brightStar.name + " (" + str(brightStar.magnitude) + ")",brightStar.id, "", brightStar.azimuth, brightStar.altitude, 0, 0))
+        menuItems.append(MenuItem(brightStar.name + " " + str(brightStar.magnitude) ,brightStar.id, "", brightStar.azimuth, brightStar.altitude, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     print(selectedItem)
@@ -86,17 +93,17 @@ def doStars():
 
 def doConstellations():
     menuItems = []
-    for constellation in cm.constellations:
+    for index,constellation in enumerate(cm.constellations):
         # Only show constellations that are abouve the horizon
         if constellation.altitude>settingsManager.get_setting("CONSTELLATION_ALTITUDE_CUTOFF"):
-            menuItems.append(MenuItem(constellation.name ,constellation.hipId, constellation.description, constellation.azimuth, constellation.altitude, 0, 0))
+            menuItems.append(MenuItem(constellation.name ,index, constellation.description, constellation.azimuth, constellation.altitude, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     print(selectedItem)
     # Get the objects most recent information on azimuth and altitude.
-    starCoordinates=cm.getHipApparantCoordinate(selectedItem.id,gpsManager.rtcDateTime)
+    starCoordinates=cm.getHipApparantCoordinate(cm.constellations[selectedItem.id].hipId,gpsManager.rtcDateTime)
     print(starCoordinates)
-    actionText=selectedItem.name  + "\n" + selectedItem.description + "\nAzimuth: " + str(starCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(starCoordinates.get("altitude").degrees)[:4] 
+    actionText=selectedItem.name  + " - " + cm.constellations[selectedItem.id].starName + "\n" + selectedItem.description + "\nAz: " + str(starCoordinates.get("azimuth").degrees)[:4] + " Alt: " + str(starCoordinates.get("altitude").degrees)[:4] 
     display.showText(actionText)
     gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
     time.sleep(5)
