@@ -14,23 +14,33 @@ dm=DownloadManager()
 hasInternet=dm.checkInternet()
 display= Display()
 display.showText("Starting SkyLaser...\nhasInternet:" + str(hasInternet))
-time.sleep(10)
 gm=GimbalManager()
 settingsManager=SettingsManager("settings.json")
 
 # Need GPS info to initialize the starFinder
 display.showText("Getting GPS data...")
-gpsManager=GPSManager()
-if gpsManager.isValid :
-    print(gpsManager.latitude , gpsManager.longitude , gpsManager.elevation , gpsManager.datetime , gpsManager.timestamp)
-    gpsInfoText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] + "\nDate (GMT): " + str(gpsManager.datetime)[:10] + "\nTime (GMT): " + str(gpsManager.datetime)[11:19] 
-    print(gpsInfoText)
-    display.showText(gpsInfoText)
-    time.sleep(2)
-else:
-    display.showText("       Sky Laser!\nGPS faild\nTry restarting.")
-    time.sleep(5)
-    exit()
+gpsLooper=0
+for retry in range(3):
+    try:
+        gpsManager=GPSManager()
+        if gpsManager.isValid :
+            print(gpsManager.latitude , gpsManager.longitude , gpsManager.elevation , gpsManager.datetime , gpsManager.timestamp)
+            gpsInfoText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] + "\nDate (GMT): " + str(gpsManager.datetime)[:10] + "\nTime (GMT): " + str(gpsManager.datetime)[11:19] 
+            print(gpsInfoText)
+            display.showText(gpsInfoText)
+            time.sleep(2)
+            break
+    except:
+        gpsLooper+=1
+        display.showText("Failed connection to gps,\n trying again: "  + str(gpsLooper) )
+        time.sleep(5)
+print(gpsLooper)
+if gpsLooper==3 :
+        display.showText("Error\nFailed connection to gps, exiting")
+        time.sleep(5)
+        exit()
+        
+
 
 display.showText("Loading celestial data...")  
 cm=CelestialManager(gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime)

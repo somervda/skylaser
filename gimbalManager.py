@@ -37,17 +37,14 @@ class GimbalManager:
 if __name__ == "__main__":
     gm=GimbalManager()
     # 1=altitude 2=azumuth 3=full
-    TEST_TYPE = 3
+    TEST_TYPE = 1
     gm.move(0,0)
     time.sleep(5)
     if TEST_TYPE == 1:
         # Altitude
         for loop in range(3):
-            gm.move(0,0)
-            gm.move(0,45)
-            gm.move(0,90)
-            gm.move(180,45)
-            gm.move(180,0)
+            gm.move(90,0)
+            gm.move(270,0)
 
     if TEST_TYPE == 2:
         # AZIMUTH

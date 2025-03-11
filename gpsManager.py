@@ -28,6 +28,7 @@ class GPSManager:
                 return False
             newdata=ser.readline().decode('utf-8')
             if newdata[0:3]=="$GP":
+                print(newdata)
                 dataout =pynmea2.NMEAStreamReader()
                 msg=pynmea2.parse(newdata)
                 if hasattr(msg, 'datetime'):
