@@ -21,7 +21,14 @@ class GPSManager:
         # Will read the gps stream until all required values have been recieved
         print("readGPS...")
         startTime= time.time()
+        loopCnt=0
         while not (self._longitude and self._latitude and self._elevation and self._datetime ): 
+            loopCnt +=1
+            if not(self._elevation ) and loopCnt> 40:
+                # Elevation is hard to calculate by gps, if no found after 40 attemps then 
+                # just set it to zero
+                print("gpsManager: gave up and set elevation to zero")
+                self._elevation=0
             if time.time()-startTime>180:
                 print("GPS timeout")
                 return False
@@ -34,7 +41,7 @@ class GPSManager:
                 print("gpsManager, error reading newdata:",e)
                 newdata="     "
             if newdata[0:3]=="$GP":
-                print("* ",datetime.now())
+                print("* ",datetime.now(),self._longitude,self._latitude,self._elevation,self._datetime)
                 print(newdata)
                 dataout =pynmea2.NMEAStreamReader()
                 msg=pynmea2.parse(newdata)
