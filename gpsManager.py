@@ -21,16 +21,16 @@ class GPSManager:
         # Will read the gps stream until all required values have been recieved
         print("readGPS...")
         startTime= time.time()
-        loopCnt=0
         while not (self._longitude and self._latitude and self._elevation and self._datetime ): 
-            loopCnt +=1
             if not(self._elevation) and  (time.time()-startTime>50):
                 # Elevation is hard to calculate by gps, if no found after 50 seconds  then 
                 # just set it to 0.1
                 print("gpsManager: gave up and set elevation to 0.1")
+                print("time.time()-startTime:",time.time()-startTime)
                 self._elevation=0.1
             if time.time()-startTime>60:
                 print("GPS timeout")
+                print("time.time()-startTime:",time.time()-startTime)
                 return False
             # Sometime get a -
             # 'utf-8' codec can't decode byte 0x89 in position 1: invalid start byte
