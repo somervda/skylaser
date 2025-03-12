@@ -38,6 +38,7 @@ display.showText("Getting GPS...")
 gpsLooper=0
 gpsManager=GPSManager()
 for retry in range(4):
+    print("gpsLooper:",str(gpsLooper))
     try:
         if gpsManager.readGPS():
             print(gpsManager.latitude , gpsManager.longitude , gpsManager.elevation , gpsManager.datetime , gpsManager.timestamp)
@@ -48,16 +49,17 @@ for retry in range(4):
             break
         else:
             gpsLooper+=1
-            exceptMsg="Failed to get GPS,\nTrying again: "  + str(gpsLooper)
+            exceptMsg="Timed out\nTrying again: "  + str(gpsLooper)
             display.showText(exceptMsg )
-            print(exceptMsg ,e)
+            print(exceptMsg )
             time.sleep(5)           
     except Exception as e:
         gpsLooper+=1
-        exceptMsg="Exception connection\nto GPS,\nTrying again: "  + str(gpsLooper)
+        exceptMsg="Exception connection\nto GPS\nTrying again: "  + str(gpsLooper)
         display.showText(exceptMsg )
         print(exceptMsg ,e)
         time.sleep(5)
+print("gpsLooper x:",str(gpsLooper))
 if gpsLooper==4 :
         display.showText("Error\nFailed connection to GPS\nExiting")
         time.sleep(5)
@@ -119,7 +121,7 @@ def doStars():
     # Get the objects most recent information on azimuth and altitude.
     starCoordinates=cm.getHipApparantCoordinate(selectedItem.id,gpsManager.rtcDateTime)
     print(starCoordinates)
-    actionText=selectedItem.name  + "\nAzimuth: " + str(starCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(starCoordinates.get("altitude").degrees)[:4] 
+    actionText=selectedItem.name  + "\nAzimuth: " + str(starCoordinates.get("azimuth").degrees)[:5] + "\nAltitude: " + str(starCoordinates.get("altitude").degrees)[:4] 
     display.showText(actionText)
     gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
     time.sleep(5)
@@ -136,7 +138,7 @@ def doConstellations():
     # Get the objects most recent information on azimuth and altitude.
     starCoordinates=cm.getHipApparantCoordinate(cm.constellations[selectedItem.id].hipId,gpsManager.rtcDateTime)
     print(starCoordinates)
-    actionText=selectedItem.name  + " - " + cm.constellations[selectedItem.id].starName + "\n" + selectedItem.description + "\nAz: " + str(starCoordinates.get("azimuth").degrees)[:4] + " Alt: " + str(starCoordinates.get("altitude").degrees)[:4] 
+    actionText=selectedItem.name  + " - " + cm.constellations[selectedItem.id].starName + "\n" + selectedItem.description + "\nAz: " + str(starCoordinates.get("azimuth").degrees)[:5] + " Alt: " + str(starCoordinates.get("altitude").degrees)[:4] 
     display.showText(actionText)
     gm.move(starCoordinates.get("azimuth").degrees,starCoordinates.get("altitude").degrees)
     time.sleep(5)
@@ -154,7 +156,7 @@ def doPlanets():
     print(selectedItem.id,cm.planets[selectedItem.id].planet)
     planetCoordinates=cm.getPlanetApparantCoordinate(cm.planets[selectedItem.id].planet,gpsManager.rtcDateTime)
     print(planetCoordinates)
-    actionText=selectedItem.name  + "\n" + "\nAzimuth: " + str(planetCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(planetCoordinates.get("altitude").degrees)[:4] 
+    actionText=selectedItem.name  + "\n" + "\nAzimuth: " + str(planetCoordinates.get("azimuth").degrees)[:5] + "\nAltitude: " + str(planetCoordinates.get("altitude").degrees)[:4] 
     display.showText(actionText)
     gm.move(planetCoordinates.get("azimuth").degrees,planetCoordinates.get("altitude").degrees)
     time.sleep(5)
@@ -171,7 +173,7 @@ def doSatellites():
     satelliteCoordinates=cm.getSatelliteApparantCoordinate(cm.satellites[selectedItem.id].satellite,gpsManager.rtcDateTime)
     print(satelliteCoordinates)
     if satelliteCoordinates.get("altitude").degrees>0:
-        actionText=selectedItem.name  + "\n" + cm.satellites[selectedItem.id].description + "\nAzimuth: " + str(satelliteCoordinates.get("azimuth").degrees)[:4] + "\nAltitude: " + str(satelliteCoordinates.get("altitude").degrees)[:4] 
+        actionText=selectedItem.name  + "\n" + cm.satellites[selectedItem.id].description + "\nAzimuth: " + str(satelliteCoordinates.get("azimuth").degrees)[:5] + "\nAltitude: " + str(satelliteCoordinates.get("altitude").degrees)[:4] 
         display.showText(actionText)
         gm.move(satelliteCoordinates.get("azimuth").degrees,satelliteCoordinates.get("altitude").degrees)
     else: 

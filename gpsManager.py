@@ -24,11 +24,11 @@ class GPSManager:
         loopCnt=0
         while not (self._longitude and self._latitude and self._elevation and self._datetime ): 
             loopCnt +=1
-            if not(self._elevation) and loopCnt == 40:
-                # Elevation is hard to calculate by gps, if no found after 40 attemps then 
-                # just set it to zero
-                print("gpsManager: gave up and set elevation to zero")
-                self._elevation=0
+            if not(self._elevation) and  (time.time()-startTime>50):
+                # Elevation is hard to calculate by gps, if no found after 50 seconds  then 
+                # just set it to 0.1
+                print("gpsManager: gave up and set elevation to 0.1")
+                self._elevation=0.1
             if time.time()-startTime>60:
                 print("GPS timeout")
                 return False
@@ -55,9 +55,11 @@ class GPSManager:
                 if hasattr(msg, 'altitude'):
                     self._elevation = msg.altitude
                 if hasattr(msg, 'latitude'):
-                    self._latitude = msg.latitude
+                    if msg.latitude!=0:
+                        self._latitude = msg.latitude
                 if hasattr(msg, 'longitude'):
-                    self._longitude = msg.longitude
+                    if msg.longitude!=0:
+                        self._longitude = msg.longitude
         # Find the delta between the real time clock and the GPS to be able
         # to get the rtc based datetime based on a correction between the GPS and basic RTC time
         # This is needed because the rtc usually is only set when the PIZero is connect to the internet
