@@ -18,25 +18,32 @@ gm=GimbalManager()
 settingsManager=SettingsManager("settings.json")
 
 # Need GPS info to initialize the starFinder
-display.showText("Getting GPS data...")
+display.showText("Getting GPS...")
 gpsLooper=0
-for retry in range(3):
+gpsManager=GPSManager()
+for retry in range(4):
     try:
-        gpsManager=GPSManager()
-        if gpsManager.isValid :
+        if gpsManager.readGPS():
             print(gpsManager.latitude , gpsManager.longitude , gpsManager.elevation , gpsManager.datetime , gpsManager.timestamp)
             gpsInfoText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] + "\nDate (GMT): " + str(gpsManager.datetime)[:10] + "\nTime (GMT): " + str(gpsManager.datetime)[11:19] 
             print(gpsInfoText)
             display.showText(gpsInfoText)
             time.sleep(2)
             break
-    except:
+        else:
+            gpsLooper+=1
+            exceptMsg="Failed to get GPS,\nTrying again: "  + str(gpsLooper)
+            display.showText(exceptMsg )
+            print(exceptMsg ,e)
+            time.sleep(5)           
+    except Exception as e:
         gpsLooper+=1
-        display.showText("Failed connection to gps,\n trying again: "  + str(gpsLooper) )
+        exceptMsg="Exception connection\nto GPS,\nTrying again: "  + str(gpsLooper)
+        display.showText(exceptMsg )
+        print(exceptMsg ,e)
         time.sleep(5)
-print(gpsLooper)
-if gpsLooper==3 :
-        display.showText("Error\nFailed connection to gps, exiting")
+if gpsLooper==4 :
+        display.showText("Error\nFailed connection to GPS\nExiting")
         time.sleep(5)
         exit()
         

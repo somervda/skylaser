@@ -10,7 +10,7 @@ ser=serial.Serial(port,baudrate=9600,timeout=0.5)
 
 class GPSManager:
     def __init__(self):
-        self.readGPS()
+        pass
 
     def readGPS(self):
         self._latitude = None
@@ -18,7 +18,6 @@ class GPSManager:
         self._elevation = None
         self._timestamp = None
         self._datetime = None
-        self._isValid = False
         # Will read the gps stream until all required values have been recieved
         print("readGPS...")
         startTime= time.time()
@@ -26,8 +25,16 @@ class GPSManager:
             if time.time()-startTime>180:
                 print("GPS timeout")
                 return False
-            newdata=ser.readline().decode('utf-8')
+            # Sometime get a -
+            # 'utf-8' codec can't decode byte 0x89 in position 1: invalid start byte
+            # just skip error and read next time we come around
+            try:
+                newdata=ser.readline().decode('utf-8')
+            except Exception as e:
+                print("gpsManager, error reading newdata:",e)
+                newdata="     "
             if newdata[0:3]=="$GP":
+                print("* ",datetime.now())
                 print(newdata)
                 dataout =pynmea2.NMEAStreamReader()
                 msg=pynmea2.parse(newdata)
@@ -44,7 +51,6 @@ class GPSManager:
                     self._latitude = msg.latitude
                 if hasattr(msg, 'longitude'):
                     self._longitude = msg.longitude
-        self._isValid = True
         # Find the delta between the real time clock and the GPS to be able
         # to get the rtc based datetime based on a correction between the GPS and basic RTC time
         # This is needed because the rtc usually is only set when the PIZero is connect to the internet
@@ -82,10 +88,7 @@ class GPSManager:
         # print("RTC datetime adjusted based on GPS:",rtc + self._rtcDeltaSeconds, " (rtc:",rtc,")")
         return rtc + self._rtcDeltaSeconds
 
-    @property
-    def isValid(self):
-        # Has succesfully collected GPS data
-        return self._isValid
+
 
 if __name__ == "__main__":
     gpsManager=GPSManager()
