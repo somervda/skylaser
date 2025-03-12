@@ -22,15 +22,16 @@ class GPSManager:
         print("readGPS...")
         startTime= time.time()
         while not (self._longitude and self._latitude and self._elevation and self._datetime ): 
-            if not(self._elevation) and  (time.time()-startTime>50):
-                # Elevation is hard to calculate by gps, if no found after 50 seconds  then 
+            duration = time.time()-startTime
+            if not(self._elevation) and  duration>30:
+                # Elevation is hard to calculate by gps, if no found after 30 seconds  then 
                 # just set it to 0.1
                 print("gpsManager: gave up and set elevation to 0.1")
-                print("time.time()-startTime:",time.time()-startTime)
+                print("duration:",duration,self._elevation)
                 self._elevation=0.1
-            if time.time()-startTime>60:
+            if duration>60:
                 print("GPS timeout")
-                print("time.time()-startTime:",time.time()-startTime)
+                print("duration:",duration)
                 return False
             # Sometime get a -
             # 'utf-8' codec can't decode byte 0x89 in position 1: invalid start byte
@@ -53,7 +54,8 @@ class GPSManager:
                     # datetime_object = datetime.strptime(dateTimeSTR, "%Y-%m-%d %H:%M:$S")
                     # print(self._datetime)
                 if hasattr(msg, 'altitude'):
-                    self._elevation = msg.altitude
+                    if msg.altitude:
+                        self._elevation = msg.altitude
                 if hasattr(msg, 'latitude'):
                     if msg.latitude!=0:
                         self._latitude = msg.latitude
