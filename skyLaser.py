@@ -1,4 +1,5 @@
 import time
+import os
 from menu import Display,MenuItem
 from datetime import datetime
 from gpsManager import GPSManager
@@ -13,6 +14,21 @@ print("\n\nStarting Skylaser")
 dm=DownloadManager()
 hasInternet=dm.checkInternet()
 display= Display()
+
+# Check required data files exist
+if not (os.path.exists("de421.bsp") and os.path.exists("hip_main.dat") and os.path.exists("satellites.csv")):
+    if hasInternet:
+        display.showText("Downloading missing\nfiles...")
+        dm.downloadHippacos()
+        dm.downloadDe421()
+        dm.downloadSatellites()
+    else:
+        display.showText("A file is missing.\nYou are not connected\nto the internet\nConnect to internet\nto load files.")
+        time.sleep(10)
+        exit()
+
+
+
 display.showText("Starting SkyLaser...\nhasInternet:" + str(hasInternet))
 gm=GimbalManager()
 settingsManager=SettingsManager("settings.json")
