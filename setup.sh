@@ -32,9 +32,6 @@ pip install skyfield --break-system-packages
 
 pip install pandas --break-system-packages
 
-# Needed to support de431 download of you get a ceritificate error
-pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org ssd.jpl.nasa.gov --break-system-packages
-
 export PATH=$PATH:/home/pi/.local/bin
 
 # Install skyfield https://rhodesmill.org/skyfield/
@@ -73,38 +70,8 @@ pip3 install adafruit-circuitpython-servokit  --break-system-packages
 # GPS module connect via serial
 # see https://sparklers-the-makers.github.io/blog/robotics/use-neo-6m-module-with-raspberry-pi/
 pip install pynmea2 --break-system-packages
-# Note: compass uses gy271compass.py library already loaded in project files
-# Use gpiozero for managing a rotary control https://gpiozero.readthedocs.io/en/stable/index.html
 pip install gpiozero --break-system-packages
 
 sudo pip3 install smbus2 --break-system-packages
 
-# # Add iotLoader.service to the /lib/systemd/system/ folder
-# # By default service is not enabled 
-# echo Setup the iotLoader.service to run on startup 
-# sudo cp iotLoader.service /lib/systemd/system/iotLoader.service
-# # sudo systemctl enable iotLoader.service
-# # sudo systemctl start iotLoader.service 
-# sudo systemctl status iotLoader.service -n50
-
-# echo Install fastapi for web services and a ASGI web server
-# pip install fastapi --break-system-package
-# pip install "uvicorn[standard]" --break-system-package
-# pip install python-multipart --break-system-package
-# export PATH=$PATH:$HOME/.local/bin
-
-# # Add iotWS.service to the /lib/systemd/system/ folder
-# # By default service is not enabled 
-# echo Setup the iotWS.service to run on startup 
-# sudo cp iotWS.service /lib/systemd/system/iotWS.service
-# # sudo systemctl enable iotWS.service
-# # sudo systemctl start iotWS.service 
-# sudo systemctl status iotWS.service -n50
-
-# Network notes
-# Use: sudo nmcli -p connection show 
-# to list network connections
-
-# Use: sudo nmtui
-# to update connections
 
