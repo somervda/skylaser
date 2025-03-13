@@ -31,9 +31,9 @@ if not (os.path.exists("de421.bsp") and os.path.exists("hip_main.dat") and os.pa
 
 
 display.showText("Starting SkyLaser...\nhasInternet:" + str(hasInternet))
+time.sleep(2)
 gm=GimbalManager()
 settingsManager=SettingsManager("settings.json")
-
 # Need GPS info to initialize the starFinder
 display.showText("Getting GPS...")
 gpsLooper=0
@@ -78,7 +78,8 @@ def doStartMenu():
     menuItems.append(MenuItem("Constellations", 2,"The Big Dipper, Orion etc", 0, 0, 0, 0))
     menuItems.append(MenuItem("Stars",3, "Polarus,Betelgeuse , Sirus etc", 0, 0, 0, 0))
     menuItems.append(MenuItem("Setup",4, "", 0, 0, 0, 0))
-    menuItems.append(MenuItem("Exit", 5,"", 0, 0, 0, 0))
+    menuItems.append(MenuItem("Status",5, "", 0, 0, 0, 0))
+    menuItems.append(MenuItem("Exit", 6,"", 0, 0, 0, 0))
     display.menuItems = menuItems
     return(display.showMenu())
 
@@ -182,7 +183,12 @@ def doSatellites():
         display.showText(actionText)
     time.sleep(5)
 
-
+def doStatus():
+    statusText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] 
+    statusText += "\nGPS:" + str(gpsManager.datetime)[:10] + " " + str(gpsManager.datetime)[11:19] 
+    statusText += "\nRTC:" + str(gpsManager.rtcDateTime)[:10] + " " + str(gpsManager.rtcDateTime)[11:19] 
+    display.showText(statusText)
+    time.sleep(5)
 
 # Main code
 while True:
@@ -200,4 +206,6 @@ while True:
         doPlanets()
     if selectedItem.name =="Exit":
         exit()
+    if selectedItem.name =="Status":
+        doStatus()
 
