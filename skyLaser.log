@@ -1,1 +1,44 @@
-   
+
+
+Starting Skylaser
+You are connected to the internet.
+Settings loaded successfully.
+Settings loaded successfully.
+gpsLooper: 0
+readGPS...
+*  2025-03-13 14:35:32.249077 None None None None
+$GPRMC,183549.00,A,4010.48592,N,07518.12596,W,0.546,,130325,,,A*64
+
+*  2025-03-13 14:35:32.261533 -75.30209933333333 40.17476533333333 None 2025-03-13 18:35:49+00:00
+$GPVTG,,T,,M,0.546,N,1.011,K,A*25
+
+*  2025-03-13 14:35:32.265164 -75.30209933333333 40.17476533333333 None 2025-03-13 18:35:49+00:00
+$GPGGA,183549.00,4010.48592,N,07518.12596,W,1,07,1.42,106.5,M,-34.5,M,,*64
+
+GPS: -75.30209933333333 40.17476533333333  Elevation: 106.5  datetime: 2025-03-13 18:35:49+00:00
+40.17476533333333 -75.30209933333333 106.5 2025-03-13 18:35:49+00:00 1741890949.0
+Latitude: 40.1747
+Longitude: -75.302
+Date (GMT): 2025-03-13
+Time (GMT): 18:35:49
+Settings loaded successfully.
+Loading ephameris from  from de421.bsp
+Loading dataframe from hip_main.dat
+loading ephameris from satellites.csv
+Building Satellites...
+getBrightStars
+Building Constellations...
+Building planets...
+RTC datetime: 2025-03-13 18:37:19.941465+00:00
+Down
+Down
+Down
+Down
+Down
+RTC datetime: 2025-03-13 18:44:07.109220+00:00
+Down
+Down
+Down
+Down
+Down
+Down

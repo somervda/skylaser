@@ -46,13 +46,12 @@ class GPSManager:
                 print(newdata)
                 dataout =pynmea2.NMEAStreamReader()
                 msg=pynmea2.parse(newdata)
-                if hasattr(msg, 'datetime'):
-                    # print( msg.datetime)
-                    self._datetime = datetime.fromisoformat(str(msg.datetime))
-                    # dateTimeSTR = str(msg.datetime.date()) + " " +str(msg.datetime.time())
-                    # print("dateTimeSTR:",dateTimeSTR)
-                    # datetime_object = datetime.strptime(dateTimeSTR, "%Y-%m-%d %H:%M:$S")
-                    # print(self._datetime)
+                try:
+                    if hasattr(msg, 'datetime'):
+                        self._datetime = datetime.fromisoformat(str(msg.datetime))
+                except Exception as e:
+                    # Report and Ignore if we have an error
+                    print("hasattr(msg, 'datetime') error",e)
                 if hasattr(msg, 'altitude'):
                     if msg.altitude:
                         self._elevation = msg.altitude
