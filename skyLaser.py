@@ -7,6 +7,7 @@ from gimbalManager import GimbalManager
 from celestialManager import CelestialManager
 from settingsManager import SettingsManager
 from downloadManager import DownloadManager
+import traceback
 
 print("\n\nStarting Skylaser")
 
@@ -49,17 +50,17 @@ for retry in range(4):
             break
         else:
             gpsLooper+=1
-            exceptMsg="Timed out\nTrying again: "  + str(gpsLooper)
-            display.showText(exceptMsg )
+            exceptMsg="readGPS failed: "  + str(gpsLooper)
+            display.showText(exceptMsg)
             print(exceptMsg )
             time.sleep(5)           
     except Exception as e:
         gpsLooper+=1
-        exceptMsg="Exception connection\nto GPS\nTrying again: "  + str(gpsLooper)
+        exceptMsg="Exception reading GPS: "  + str(gpsLooper)
+        print(exceptMsg +"\n",e)
+        print(traceback.format_exc())
         display.showText(exceptMsg )
-        print(exceptMsg ,e)
         time.sleep(5)
-print("gpsLooper x:",str(gpsLooper))
 if gpsLooper==4 :
         display.showText("Error\nFailed connection to GPS\nExiting")
         time.sleep(5)
