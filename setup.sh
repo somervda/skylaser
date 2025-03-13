@@ -74,4 +74,8 @@ pip install gpiozero --break-system-packages
 
 sudo pip3 install smbus2 --break-system-packages
 
+# Note: To run skyLaser on startup add the following cron job
+# use: crontab -e
+# @reboot bash ~/skylaser/skyLaser.sh
+
 
