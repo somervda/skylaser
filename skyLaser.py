@@ -8,12 +8,16 @@ from celestialManager import CelestialManager
 from settingsManager import SettingsManager
 from downloadManager import DownloadManager
 import traceback
+import socket
+
+
 
 print("\n\nStarting Skylaser")
 
 # Initializations
 dm=DownloadManager()
 hasInternet=dm.checkInternet()
+
 display= Display()
 
 # Check required data files exist
@@ -27,8 +31,6 @@ if not (os.path.exists("de421.bsp") and os.path.exists("hip_main.dat") and os.pa
         display.showText("A file is missing.\nYou are not connected\nto the internet\nConnect to internet\nto load files.")
         time.sleep(10)
         exit()
-
-
 
 display.showText("Starting SkyLaser...\nhasInternet:" + str(hasInternet))
 time.sleep(2)
@@ -70,6 +72,12 @@ if gpsLooper==4 :
 
 display.showText("Loading celestial data...")  
 cm=CelestialManager(gpsManager.latitude,gpsManager.longitude ,gpsManager.elevation,gpsManager.rtcDateTime)
+
+def getNetworkIp():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    s.connect(('<broadcast>', 12345))  # 12345 is random port.
+    return s.getsockname()[0]
 
 def doStartMenu():
     menuItems = []
@@ -184,11 +192,20 @@ def doSatellites():
     time.sleep(5)
 
 def doStatus():
-    statusText = "Latitude: " + str(gpsManager.latitude)[:7] +"\nLongitude: " + str(gpsManager.longitude)[:7] 
+    statusText = "Lat: " + str(gpsManager.latitude)[:7] +" Lng: " + str(gpsManager.longitude)[:7] 
     statusText += "\nGPS:" + str(gpsManager.datetime)[:10] + " " + str(gpsManager.datetime)[11:19] 
     statusText += "\nRTC:" + str(gpsManager.rtcDateTime)[:10] + " " + str(gpsManager.rtcDateTime)[11:19] 
+    if hasInternet:
+        try:
+            statusText += "\nIP:" + getNetworkIp()
+        except:
+            statusText += "\nConnected to internet"
+    else:
+        statusText += "\nNo internet connection"
     display.showText(statusText)
-    time.sleep(5)
+    time.sleep(10)
+
+
 
 # Main code
 while True:
