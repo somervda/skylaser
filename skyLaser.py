@@ -254,8 +254,8 @@ while True:
     if selectedItem.name =="Planets":
         doPlanets()
     if selectedItem.name =="Exit":
-        gm.move(180,0)
         display.showText("Bye...")
+        gm.move(180,0)
         time.sleep(2)
         exit()
     if selectedItem.name =="Status":
