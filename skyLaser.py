@@ -24,9 +24,25 @@ display= Display()
 if not (os.path.exists("de421.bsp") and os.path.exists("hip_main.dat") and os.path.exists("satellites.csv")):
     if hasInternet:
         display.showText("Downloading missing\nfiles...")
-        dm.downloadHippacos()
-        dm.downloadDe421()
-        dm.downloadSatellites()
+        time.sleep(1)
+        try:
+            dm.downloadHippacos()
+        except Exception as e:
+            display.showText("Hippacos download failed")
+            print("Hippacos download failed:",e)
+            time.sleep(1)
+        try:
+            dm.downloadDe421()
+        except Exception as e:
+            display.showText("De421 download failed")
+            print("De421 download failed:",e)
+            time.sleep(1)
+        try:
+            dm.downloadSatellites()
+        except Exception as e:
+            display.showText("Satellite download failed")
+            print("Satellite download failed:",e)
+            time.sleep(1)
     else:
         display.showText("A file is missing.\nYou are not connected\nto the internet\nConnect to internet\nto load files.")
         time.sleep(10)
@@ -116,10 +132,26 @@ def doSetup():
                 gm.move(azimuth,altitude)
         gm.move(0,0)
     if selectedItem.id==10:
-        display.showText("Getting Hippacos...")
-        dm.downloadHippacos()
-        display.showText("Getting De421...")
-        dm.downloadDe421()
+        display.showText("Downloading files...")
+        time.sleep(1)
+        try:
+            dm.downloadHippacos()
+        except Exception as e:
+            display.showText("Hippacos download failed")
+            print("Hippacos download failed:",e)
+            time.sleep(1)
+        try:
+            dm.downloadDe421()
+        except Exception as e:
+            display.showText("De421 download failed")
+            print("De421 download failed:",e)
+            time.sleep(1)
+        try:
+            dm.downloadSatellites()
+        except Exception as e:
+            display.showText("Satellite download failed")
+            print("Satellite download failed:",e)
+            time.sleep(1)
 
 def doStars():
     menuItems = []
