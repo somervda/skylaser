@@ -42,8 +42,8 @@ class GPSManager:
                 print("gpsManager, error reading newdata:",e)
                 newdata="     "
             if newdata[0:3]=="$GP":
-                print("* ",datetime.now(),self._longitude,self._latitude,self._elevation,self._datetime)
-                print(newdata)
+                # print("* ",datetime.now(),self._longitude,self._latitude,self._elevation,self._datetime)
+                # print(newdata)
                 dataout =pynmea2.NMEAStreamReader()
                 msg=pynmea2.parse(newdata)
                 try:

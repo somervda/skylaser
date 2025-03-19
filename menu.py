@@ -88,7 +88,6 @@ class Display:
                 if self._selectedItemIndex<self._windowStartIndex:
                     self._windowStartIndex-=1
         if GPIO.input(PINDOWN)==0:
-            print("Down")
             if self._selectedItemIndex<(len(self._menuItems)-1):
                 self._selectedItemIndex+=1
                 if self._selectedItemIndex>=self._windowStartIndex+self._windowSize:

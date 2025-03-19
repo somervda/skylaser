@@ -6,39 +6,21 @@ Settings loaded successfully.
 Settings loaded successfully.
 gpsLooper: 0
 readGPS...
-gpsManager, error reading newdata: 'utf-8' codec can't decode byte 0xc0 in position 0: invalid start byte
-gpsManager, error reading newdata: 'utf-8' codec can't decode byte 0xb1 in position 0: invalid start byte
-gpsManager, error reading newdata: 'utf-8' codec can't decode byte 0xfe in position 2: invalid start byte
-*  2025-03-16 08:28:46.333198 None None None None
-$GPVTG,,T,,M,0.334,N,0.619,K,A*29
-
-*  2025-03-16 08:28:46.337675 None None None None
-$GPGGA,123004.00,4010.49013,N,07518.13155,W,1,07,1.31,104.1,M,-34.5,M,,*67
-
-*  2025-03-16 08:28:46.342253 -75.3021925 40.1748355 104.1 None
-$GPGSA,A,3,04,16,27,09,26,08,31,,,,,,2.89,1.31,2.58*0C
-
-*  2025-03-16 08:28:46.346283 -75.3021925 40.1748355 104.1 None
-$GPGSV,3,1,11,03,00,214,,04,65,235,16,07,19,299,12,08,33,186,22*72
-
-*  2025-03-16 08:28:46.350281 -75.3021925 40.1748355 104.1 None
-$GPGSV,3,2,11,09,48,294,25,16,63,040,23,18,07,057,,26,36,058,31*70
-
-*  2025-03-16 08:28:46.353551 -75.3021925 40.1748355 104.1 None
-$GPGSV,3,3,11,27,58,143,33,28,02,112,,31,24,104,22*4C
-
-*  2025-03-16 08:28:46.356662 -75.3021925 40.1748355 104.1 None
-$GPGLL,4010.49013,N,07518.13155,W,123004.00,A,A*7D
-
-*  2025-03-16 08:28:46.361005 -75.3021925 40.1748355 104.1 None
-$GPRMC,123005.00,A,4010.49016,N,07518.13151,W,0.079,,160325,,,A*69
-
-GPS: -75.30219183333334 40.174836  Elevation: 104.1  datetime: 2025-03-16 12:30:05+00:00
-40.174836 -75.30219183333334 104.1 2025-03-16 12:30:05+00:00 1742128205.0
+gpsManager: gave up and set elevation to 0.1
+duration: 172.94396901130676 None
+GPS timeout
+duration: 172.94396901130676
+readGPS failed: 1
+gpsLooper: 1
+readGPS...
+gpsManager: gave up and set elevation to 0.1
+duration: 30.055236339569092 None
+GPS: -75.30208766666667 40.17482233333333  Elevation: 0.1  datetime: 2025-03-19 18:51:26+00:00
+40.17482233333333 -75.30208766666667 0.1 2025-03-19 18:51:26+00:00 1742410286.0
 Latitude: 40.1748
 Longitude: -75.302
-Date (GMT): 2025-03-16
-Time (GMT): 12:30:05
+Date (GMT): 2025-03-19
+Time (GMT): 18:51:26
 Settings loaded successfully.
 Loading ephameris from  from de421.bsp
 Loading dataframe from hip_main.dat
@@ -47,17 +29,128 @@ Building Satellites...
 getBrightStars
 Building Constellations...
 Building planets...
-RTC datetime: 2025-03-16 12:32:35.781158+00:00
+RTC datetime: 2025-03-19 18:52:34.138906+00:00
 Down
 Down
 Down
 Down
 Down
-<menu.MenuItem object at 0x7f68d80210>
-7 'de421.bsp' segment 0 SOLAR SYSTEM BARYCENTER -> 10 SUN
-{'altitude': <Angle 14deg 49' 21.7">, 'azimuth': <Angle 105deg 02' 16.4">, 'distance': <Distance 0.994795 au>}
-azimuth: 105.03789954445269  altitude: 14.822700160259059  servoAzimuth: 164.96210045554733  servoAltitude: 165.17729983974095
-RTC datetime: 2025-03-16 12:33:36.850791+00:00
+Down
+<menu.MenuItem object at 0x7f953e5150>
+2 'de421.bsp' segment 0 SOLAR SYSTEM BARYCENTER -> 4 MARS BARYCENTER
+{'altitude': <Angle 18deg 25' 36.6">, 'azimuth': <Angle 72deg 35' 11.1">, 'distance': <Distance 1.02521 au>}
+azimuth: 72.58642728672783  altitude: 18.426839480666533  servoAzimuth: 17.413572713272174  servoAltitude: 18.426839480666533
+RTC datetime: 2025-03-19 18:54:44.680115+00:00
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+<menu.MenuItem object at 0x7f9316d490>
+{'altitude': <Angle 40deg 45' 49.3">, 'azimuth': <Angle 00deg 16' 41.9">, 'distance': <Distance 2.72837e+07 au>}
+azimuth: 0.2782919255727837  altitude: 40.763685917185256  servoAzimuth: 89.72170807442721  servoAltitude: 40.763685917185256
+RTC datetime: 2025-03-19 18:55:07.898666+00:00
+Down
+Down
+Down
+Down
+Down
+Down
+azimuth: 180  altitude: 0  servoAzimuth: 90  servoAltitude: 180
+
+
+Starting Skylaser
+You are connected to the internet.
+Settings loaded successfully.
+Settings loaded successfully.
+gpsLooper: 0
+readGPS...
+GPS: -75.30211916666667 40.1748295  Elevation: 111.7  datetime: 2025-03-19 19:08:43+00:00
+40.1748295 -75.30211916666667 111.7 2025-03-19 19:08:43+00:00 1742411323.0
+Latitude: 40.1748
+Longitude: -75.302
+Date (GMT): 2025-03-19
+Time (GMT): 19:08:43
+Settings loaded successfully.
+Loading ephameris from  from de421.bsp
+Loading dataframe from hip_main.dat
+loading ephameris from satellites.csv
+Building Satellites...
+getBrightStars
+Building Constellations...
+Building planets...
+RTC datetime: 2025-03-19 19:14:07.601329+00:00
+Down
+Down
+Mars
+2 'de421.bsp' segment 0 SOLAR SYSTEM BARYCENTER -> 4 MARS BARYCENTER
+{'altitude': <Angle 22deg 02' 08.2">, 'azimuth': <Angle 75deg 22' 37.2">, 'distance': <Distance 1.02533 au>}
+azimuth: 75.37699049038451  altitude: 22.035621171072027  servoAzimuth: 14.623009509615486  servoAltitude: 22.035621171072027
+RTC datetime: 2025-03-19 19:14:21.890787+00:00
+Down
+Down
+Down
+Down
+Down
+Down
+Aldebaran 0.87
+{'altitude': <Angle 49deg 15' 29.4">, 'azimuth': <Angle 114deg 07' 04.9">, 'distance': <Distance 4.11788e+06 au>}
+azimuth: 114.11801749486627  altitude: 49.25816516170044  servoAzimuth: 155.88198250513375  servoAltitude: 130.74183483829955
+RTC datetime: 2025-03-19 19:14:39.162330+00:00
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Down
+Aries
+{'altitude': <Angle 73deg 22' 36.0">, 'azimuth': <Angle 176deg 13' 58.3">, 'distance': <Distance 4.16865e+06 au>}
+azimuth: 176.23286877154268  altitude: 73.37667884085297  servoAzimuth: 93.76713122845732  servoAltitude: 106.62332115914703
+RTC datetime: 2025-03-19 19:14:51.451415+00:00
+Down
+0 VIASAT-1
+{'altitude': <Angle 28deg 17' 24.3">, 'azimuth': <Angle 232deg 20' 02.0">, 'distance': <Distance 0.000259038 au>}
+azimuth: 232.3338788660872  altitude: 28.2900700924099  servoAzimuth: 37.66612113391281  servoAltitude: 151.7099299075901
+RTC datetime: 2025-03-19 19:15:05.842588+00:00
 Down
 Down
 Down

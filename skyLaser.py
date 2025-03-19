@@ -159,7 +159,7 @@ def doStars():
         menuItems.append(MenuItem(brightStar.name + " " + str(brightStar.magnitude) ,brightStar.id, "", brightStar.azimuth, brightStar.altitude, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
-    print(selectedItem)
+    print("\nStar: ",selectedItem.name)
     # Get the objects most recent information on azimuth and altitude.
     starCoordinates=cm.getHipApparantCoordinate(selectedItem.id,gpsManager.rtcDateTime)
     print(starCoordinates)
@@ -176,7 +176,7 @@ def doConstellations():
             menuItems.append(MenuItem(constellation.name ,index, constellation.description, constellation.azimuth, constellation.altitude, 0, 0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
-    print(selectedItem)
+    print("\nConstelation: ",selectedItem.name)
     # Get the objects most recent information on azimuth and altitude.
     starCoordinates=cm.getHipApparantCoordinate(cm.constellations[selectedItem.id].hipId,gpsManager.rtcDateTime)
     print(starCoordinates)
@@ -193,7 +193,7 @@ def doPlanets():
             menuItems.append(MenuItem(planet.name ,index, "",  planet.azimuth, planet.altitude, 0,0))
     display.menuItems = menuItems
     selectedItem = display.showMenu()
-    print(selectedItem)
+    print("\nPlanet: ",selectedItem.name)
     # Get the objects most recent information on azimuth and altitude.
     print(selectedItem.id,cm.planets[selectedItem.id].planet)
     planetCoordinates=cm.getPlanetApparantCoordinate(cm.planets[selectedItem.id].planet,gpsManager.rtcDateTime)
@@ -210,7 +210,7 @@ def doSatellites():
     display.menuItems = menuItems
     selectedItem = display.showMenu()
     # Get the objects most recent information on azimuth and altitude.
-    print(selectedItem.id,cm.satellites[selectedItem.id].name)
+    print("\nSatellite: ",selectedItem.id,cm.satellites[selectedItem.id].name)
     # Get the current coordinates for the selectedsatellite (They change quickly)
     satelliteCoordinates=cm.getSatelliteApparantCoordinate(cm.satellites[selectedItem.id].satellite,gpsManager.rtcDateTime)
     print(satelliteCoordinates)
